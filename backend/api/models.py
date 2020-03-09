@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class UserConfig(models.Model):
@@ -15,3 +16,23 @@ class UserConfig(models.Model):
 
     user = models.OneToOneField(User, related_name='config', on_delete=models.CASCADE)
     role = models.CharField(choices=USER_ROLE_CHOICES, max_length=10, default=USER_ROLE_CLIENT)
+
+class Apartment(models.Model):
+    APARTMENT_AVAILABLE = 'AVAILABLE'
+    APARTMENT_RENTED = 'RENTED'
+
+    APARTMENT_STATUS_CHOICES = (
+        (APARTMENT_AVAILABLE, 'available'),
+        (APARTMENT_RENTED, 'rented'),
+    )
+
+    name = models.CharField(max_length=50, null=False, blank=False)
+    description = models.CharField(max_length=300, default='', blank=True)
+    size = models.IntegerField(null=False, blank=False)
+    price = models.FloatField(null=False, blank=False)
+    rooms = models.IntegerField(null=False, blank=False)
+    latitude = models.FloatField(null=False, blank=False)
+    longitude = models.FloatField(null=False, blank=False)
+    added_date = models.DateField(default=timezone.now)
+    status = models.CharField(choices=APARTMENT_STATUS_CHOICES, max_length=10, default=APARTMENT_AVAILABLE)
+    realtor = models.ForeignKey(User, related_name='realtor', on_delete=models.CASCADE)
