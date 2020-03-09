@@ -58,8 +58,5 @@ class UserSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
-        if validated_data.get('role') is not None:
-            instance.config.role = validated_data['role']
-            instance.config.save()
 
         return instance
