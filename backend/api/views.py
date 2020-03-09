@@ -8,7 +8,7 @@ from rest_framework_jwt.settings import api_settings
 
 from api.serializers import UserSerializer, ApartmentSerializer
 from api.permissions import IsAdminRole, IsOwnerOrReadOnly
-from api.models import Apartment
+from api.models import Apartment, UserConfig
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -62,6 +62,11 @@ class ApartmentViewSet(viewsets.ModelViewSet):
             realtor = User.get(id=realtor_id)
         else:
             realtor = self.request.user
+
+        if realtor.config.role != UserConfig.USER_ROLE_REALTOR:
+            return Response(data={
+                "detail": "A user should be realtor"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
         apartment = serializer.save(realtor=realtor)
         apartment.save()
