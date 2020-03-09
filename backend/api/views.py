@@ -54,7 +54,25 @@ class ApartmentViewSet(viewsets.ModelViewSet):
     model = Apartment
     serializer_class = ApartmentSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-    queryset = Apartment.objects.all()
+
+    def get_queryset(self):
+        qs = Apartment.objects.all()
+        if self.request.user.config.role == UserConfig.USER_ROLE_REALTOR:
+            qs = qs.filter(realtor=self.request.user)
+
+        size = self.request.query_params.get('size', None)
+        if size is not None:
+            qs = qs.filter(size__gte=size)
+
+        price = self.request.query_params.get('price', None)
+        if price is not None:
+            qs = qs.filter(price__gte=price)
+
+        rooms = self.request.query_params.get('rooms', None)
+        if rooms is not None:
+            qs = qs.filter(rooms__gte=rooms)
+
+        return qs.order_by('-added_date').order_by('price')
 
     def perform_create(self, serializer):
         realtor_id = self.request.data.get('realtor', None)
