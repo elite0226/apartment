@@ -6,8 +6,9 @@ from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
-from api.serializers import UserSerializer
-from api.permissions import IsAdminRole
+from api.serializers import UserSerializer, ApartmentSerializer
+from api.permissions import IsAdminRole, IsOwnerOrReadOnly
+from api.models import Apartment
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -48,3 +49,19 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]
     queryset = User.objects.all()
+
+class ApartmentViewSet(viewsets.ModelViewSet):
+    model = Apartment
+    serializer_class = ApartmentSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    queryset = Apartment.objects.all()
+
+    def perform_create(self, serializer):
+        realtor_id = self.request.data.get('realtor', None)
+        if realtor_id is not None:
+            realtor = User.get(id=realtor_id)
+        else:
+            realtor = self.request.user
+
+        apartment = serializer.save(realtor=realtor)
+        apartment.save()

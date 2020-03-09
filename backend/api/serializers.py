@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from api.models import UserConfig
+from api.models import UserConfig, Apartment
 
 
 class UserConfigSerializer(serializers.ModelSerializer):
@@ -34,7 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
         role = data.get('role', None)
         parsed_data = super().to_internal_value(data)
         if role is not None:
-            parsed_data['role'] = int(role)
+            parsed_data['role'] = role
 
         return parsed_data
 
@@ -60,3 +60,10 @@ class UserSerializer(serializers.ModelSerializer):
         instance.email = validated_data.get('email', instance.email)
 
         return instance
+
+class ApartmentSerializer(serializers.ModelSerializer):
+    realtor = UserSerializer(required=False)
+
+    class Meta:
+        model = Apartment
+        fields = '__all__'
