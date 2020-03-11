@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import {
   Avatar,
   Button,
@@ -12,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import DraftsIcon from '@material-ui/icons/Drafts';
+import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles(theme => ({
@@ -37,6 +38,11 @@ const useStyles = makeStyles(theme => ({
 
 function Login () {
   const classes = useStyles();
+  const { control, handleSubmit, errors } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -48,41 +54,61 @@ function Login () {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <DraftsIcon />
-                </InputAdornment>
-              ),
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            as={
+              <TextField
+                margin="normal"
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                autoComplete="username"
+                autoFocus
+              />
+            }
+            name="username"
+            control={control}
+            rules={{
+              required: 'Username is required',
             }}
-            autoComplete="email"
-            autoFocus
+            defaultValue=""
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
+          <ErrorMessage as={<Typography color="error" />} errors={errors} name="username" />
+          <Controller
+            as={
+              <TextField
+                margin="normal"
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                autoComplete="current-password"
+              />
+            }
             name="password"
-            label="Password"
-            type="password"
-            id="password"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              ),
+            control={control}
+            rules={{
+              required: 'Password is required',
             }}
-            autoComplete="current-password"
+            defaultValue=""
           />
+          <ErrorMessage as={<Typography color="error" />} errors={errors} name="password" />
           <Button
             type="submit"
             fullWidth
