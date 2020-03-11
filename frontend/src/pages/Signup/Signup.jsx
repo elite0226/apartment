@@ -1,4 +1,5 @@
 import React from 'react';
+import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import {
   Avatar,
   Button,
@@ -42,6 +43,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const { control, handleSubmit, watch, errors } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  }
 
   return (
     <Container component="main" maxWidth="sm">
@@ -53,111 +59,172 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Person />
-                    </InputAdornment>
-                  ),
+              <Controller
+                as={
+                  <TextField
+                    autoComplete="fname"
+                    name="firstName"
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+                    autoFocus
+                  />
+                }
+                name="firstname"
+                control={control}
+                rules={{
+                  required: 'First name is required',
                 }}
-                autoFocus
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="firstname" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Person />
-                    </InputAdornment>
-                  ),
+              <Controller
+                as={
+                  <TextField
+                    autoComplete="lname"
+                    name="lastName"
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person />
+                        </InputAdornment>
+                      ),
+                    }}
+                    autoFocus
+                  />
+                }
+                name="lastname"
+                control={control}
+                rules={{
+                  required: 'Last name is required',
                 }}
-                autoComplete="lname"
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastname" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="username"
-                label="Username"
+              <Controller
+                as={
+                  <TextField
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <AccountCircle />
+                        </InputAdornment>
+                      ),
+                    }}
+                    autoComplete="username"
+                  />
+                }
                 name="username"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccountCircle />
-                    </InputAdornment>
-                  ),
+                control={control}
+                rules={{
+                  required: 'Username is required',
                 }}
-                autoComplete="username"
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="username" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+              <Controller
+                as={
+                  <TextField
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Drafts />
+                        </InputAdornment>
+                      ),
+                    }}
+                    autoComplete="email"
+                  />
+                }
                 name="email"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Drafts />
-                    </InputAdornment>
-                  ),
+                control={control}
+                rules={{
+                  required: 'Email is required',
                 }}
-                autoComplete="email"
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="email" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
+              <Controller
+                as={
+                  <TextField
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock />
+                        </InputAdornment>
+                      ),
+                    }}
+                    autoComplete="current-password"
+                  />
+                }
                 name="password"
-                label="Password"
-                type="password"
-                id="password"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock />
-                    </InputAdornment>
-                  ),
+                control={control}
+                rules={{
+                  required: 'Password is required',
                 }}
-                autoComplete="current-password"
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="password" />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                name="confirmPassword"
-                label="Confirm password"
-                type="password"
-                id="confirm-password"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockOpen />
-                    </InputAdornment>
-                  ),
+              <Controller
+                as={
+                  <TextField
+                    fullWidth
+                    name="confirm-password"
+                    label="Confirm password"
+                    type="password"
+                    id="confirm-password"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockOpen />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                }
+                name="confirm-password"
+                control={control}
+                rules={{
+                  validate: (value) => value === watch('password') || 'The password is not matched'
                 }}
+                defaultValue=""
               />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="confirm-password" />
             </Grid>
           </Grid>
           <Button
