@@ -69,9 +69,7 @@ function Login () {
               <TextField
                 margin="normal"
                 fullWidth
-                id="username"
                 label="Username"
-                name="username"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -79,7 +77,6 @@ function Login () {
                     </InputAdornment>
                   ),
                 }}
-                autoComplete="username"
                 autoFocus
               />
             }
@@ -96,10 +93,8 @@ function Login () {
               <TextField
                 margin="normal"
                 fullWidth
-                name="password"
                 label="Password"
                 type="password"
-                id="password"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -107,7 +102,6 @@ function Login () {
                     </InputAdornment>
                   ),
                 }}
-                autoComplete="current-password"
               />
             }
             name="password"

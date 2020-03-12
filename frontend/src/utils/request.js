@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { call, put } from 'redux-saga/effects';
 
+import { convertToSnake, convertToCamel } from './naming';
+
 export const requestSuccess = (type) => `${type}_SUCCESS`;
 
 export const requestFail = (type) => `${type}_FAIL`;
@@ -46,9 +48,10 @@ export default ({
       url: typeof path === 'function' ? path(action) : path,
       method: method.toLowerCase(),
       headers: Object.assign({}, defaultHeaders(), headers),
-      data: body,
+      data: convertToSnake(body),
       params,
     });
+    res.data = convertToCamel(res.data);
 
     success && success(res.data, action);
 

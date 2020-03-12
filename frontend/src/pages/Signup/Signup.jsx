@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import {
   Avatar,
@@ -22,6 +24,8 @@ import {
   LockOutlined,
   Person,
 } from '@material-ui/icons';
+
+import { signup } from '../../store/reducers/auth';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -53,10 +57,16 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
   const classes = useStyles();
-  const { control, handleSubmit, watch, errors } = useForm();
+  const { control, handleSubmit, watch, errors, setValue } = useForm();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSubmit = (data) => {
-    console.log(data);
+    delete data['confirmPassword'];
+    dispatch(signup({
+      body: data,
+      success: () => history.push('/login'),
+    }));
   }
 
   return (
@@ -75,7 +85,6 @@ export default function SignUp() {
               <Controller
                 as={
                   <TextField
-                    autoComplete="fname"
                     name="firstName"
                     fullWidth
                     id="firstName"
@@ -90,7 +99,7 @@ export default function SignUp() {
                     autoFocus
                   />
                 }
-                name="firstname"
+                name="firstName"
                 control={control}
                 rules={{
                   required: 'First name is required',
@@ -103,7 +112,6 @@ export default function SignUp() {
               <Controller
                 as={
                   <TextField
-                    autoComplete="lname"
                     name="lastName"
                     fullWidth
                     id="lastName"
@@ -115,10 +123,9 @@ export default function SignUp() {
                         </InputAdornment>
                       ),
                     }}
-                    autoFocus
                   />
                 }
-                name="lastname"
+                name="lastName"
                 control={control}
                 rules={{
                   required: 'Last name is required',
@@ -132,9 +139,7 @@ export default function SignUp() {
                 as={
                   <TextField
                     fullWidth
-                    id="username"
                     label="Username"
-                    name="username"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -142,7 +147,6 @@ export default function SignUp() {
                         </InputAdornment>
                       ),
                     }}
-                    autoComplete="username"
                   />
                 }
                 name="username"
@@ -159,9 +163,13 @@ export default function SignUp() {
                 as={
                   <>
                     <InputLabel className={classes.label}>Role</InputLabel>
-                    <Select className={classes.select} native>
+                    <Select
+                      className={classes.select}
+                      onChange={(event) => setValue('role', event.target.value)}
+                      native
+                    >
                       <option value="CLIENT">Client</option>
-                      <option value="Realtor">Realtor</option>
+                      <option value="REALTOR">Realtor</option>
                     </Select>
                   </>
                 }
@@ -170,7 +178,7 @@ export default function SignUp() {
                 rules={{
                   required: 'Role is required',
                 }}
-                defaultValue=""
+                defaultValue="CLIENT"
               />
               <ErrorMessage as={<Typography color="error" />} errors={errors} name="role" />
             </Grid>
@@ -179,9 +187,7 @@ export default function SignUp() {
                 as={
                   <TextField
                     fullWidth
-                    id="email"
                     label="Email Address"
-                    name="email"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -189,7 +195,6 @@ export default function SignUp() {
                         </InputAdornment>
                       ),
                     }}
-                    autoComplete="email"
                   />
                 }
                 name="email"
@@ -206,10 +211,8 @@ export default function SignUp() {
                 as={
                   <TextField
                     fullWidth
-                    name="password"
                     label="Password"
                     type="password"
-                    id="password"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -217,7 +220,6 @@ export default function SignUp() {
                         </InputAdornment>
                       ),
                     }}
-                    autoComplete="current-password"
                   />
                 }
                 name="password"
@@ -234,10 +236,8 @@ export default function SignUp() {
                 as={
                   <TextField
                     fullWidth
-                    name="confirm-password"
                     label="Confirm password"
                     type="password"
-                    id="confirm-password"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -247,7 +247,7 @@ export default function SignUp() {
                     }}
                   />
                 }
-                name="confirm-password"
+                name="confirmPassword"
                 control={control}
                 rules={{
                   validate: (value) => value === watch('password') || 'The password is not matched'
