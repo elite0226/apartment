@@ -1,5 +1,7 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -15,6 +17,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
+
+import { login } from '../../store/reducers/auth';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -39,9 +43,14 @@ const useStyles = makeStyles(theme => ({
 function Login () {
   const classes = useStyles();
   const { control, handleSubmit, errors } = useForm();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSubmit = (data) => {
-    console.log(data);
+    dispatch(login({
+      body: data,
+      success: () => history.push('/home'),
+    }));
   }
 
   return (

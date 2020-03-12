@@ -7,7 +7,9 @@ import {
   CssBaseline,
   Grid,
   InputAdornment,
+  InputLabel,
   Link,
+  Select,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -38,6 +40,14 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  label: {
+    fontSize: '12px',
+  },
+  select: {
+    width: '100%',
+    marginTop: '4px',
+    paddingLeft: '6px',
   },
 }));
 
@@ -117,7 +127,7 @@ export default function SignUp() {
               />
               <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastname" />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <Controller
                 as={
                   <TextField
@@ -143,6 +153,26 @@ export default function SignUp() {
                 defaultValue=""
               />
               <ErrorMessage as={<Typography color="error" />} errors={errors} name="username" />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                as={
+                  <>
+                    <InputLabel className={classes.label}>Role</InputLabel>
+                    <Select className={classes.select} native>
+                      <option value="CLIENT">Client</option>
+                      <option value="Realtor">Realtor</option>
+                    </Select>
+                  </>
+                }
+                name="role"
+                control={control}
+                rules={{
+                  required: 'Role is required',
+                }}
+                defaultValue=""
+              />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="role" />
             </Grid>
             <Grid item xs={12}>
               <Controller
