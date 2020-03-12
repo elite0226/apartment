@@ -47,7 +47,6 @@ function Login () {
   const classes = useStyles();
   const { control, handleSubmit, errors } = useForm();
   const authStatus = useSelector(state => state.auth.status);
-  const authError = useSelector(state => state.auth.error);
   const dispatch = useDispatch();
   const history = useHistory();
 
