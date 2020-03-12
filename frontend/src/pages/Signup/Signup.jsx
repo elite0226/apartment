@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import {
@@ -24,8 +24,11 @@ import {
   LockOutlined,
   Person,
 } from '@material-ui/icons';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { signup } from '../../store/reducers/auth';
+import { requestFail } from '../../utils/request';
+import { SIGNUP_REQUEST } from '../../store/types';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -53,11 +56,16 @@ const useStyles = makeStyles(theme => ({
     marginTop: '4px',
     paddingLeft: '6px',
   },
+  errorPane: {
+    marginBottom: theme.spacing(3),
+  },
 }));
 
 export default function SignUp() {
   const classes = useStyles();
   const { control, handleSubmit, watch, errors, setValue } = useForm();
+  const authStatus = useSelector(state => state.auth.status);
+  const authError = useSelector(state => state.auth.error);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -67,7 +75,14 @@ export default function SignUp() {
       body: data,
       success: () => history.push('/login'),
     }));
-  }
+  };
+
+  const getErrorText = () => {
+    return authError ?
+      Object.keys(authError).map((key) => (
+        <div key={key}>{authError[key]}</div>
+      )) : '';
+  };
 
   return (
     <Container component="main" maxWidth="sm">
@@ -80,6 +95,12 @@ export default function SignUp() {
           Sign up
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+          {authStatus === requestFail(SIGNUP_REQUEST) && (
+            <Alert className={classes.errorPane} severity="error">
+              <AlertTitle>Error</AlertTitle>
+              {getErrorText()}
+            </Alert>
+          )}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Controller

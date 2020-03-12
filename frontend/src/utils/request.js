@@ -64,7 +64,7 @@ export default ({
   } catch (err) {
     yield put({
       type: requestFail(type),
-      payload: { error: err.response },
+      payload: { error: err.response.data },
     });
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import {
@@ -17,8 +17,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { login } from '../../store/reducers/auth';
+import { requestFail } from '../../utils/request';
+import { LOGIN_REQUEST } from '../../store/types';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -43,6 +46,8 @@ const useStyles = makeStyles(theme => ({
 function Login () {
   const classes = useStyles();
   const { control, handleSubmit, errors } = useForm();
+  const authStatus = useSelector(state => state.auth.status);
+  const authError = useSelector(state => state.auth.error);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -64,6 +69,12 @@ function Login () {
           Sign in
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+          {authStatus === requestFail(LOGIN_REQUEST) && (
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              Invalid username or password
+            </Alert>
+          )}
           <Controller
             as={
               <TextField
