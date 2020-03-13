@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
   Grid,
+  Typography,
 } from '@material-ui/core';
 
 import LoadingFallback from '../../components/LoadingFallback';
@@ -22,11 +23,12 @@ function HomePage () {
 
   return apartments.length > 0 ? (
     <Container maxWidth={false}>
-      <Grid container>
+      <Grid container spacing={4}>
         <Grid item md={6}>
           <ApartmentMap />
         </Grid>
         <Grid item md={6}>
+          <Typography variant="h5">Available Apartments</Typography>
           <ApartmentList />
         </Grid>
       </Grid>

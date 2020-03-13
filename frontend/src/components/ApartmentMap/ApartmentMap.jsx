@@ -16,7 +16,7 @@ const ApartmentMap = compose(
     googleMapURL:
       `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: '100vh', width: '100%' }} />,
+    containerElement: <div style={{ position: 'relative', top: '8px', height: 'calc(100vh - 80px)', width: '100%' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   withScriptjs,
