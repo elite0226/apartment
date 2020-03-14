@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
 import {
   AppBar,
@@ -8,6 +9,9 @@ import {
   Toolbar,
 } from '@material-ui/core';
 import InputIcon from '@material-ui/icons/Input';
+
+import { isAdmin } from '../../utils/role';
+import { logout } from '../../store/reducers/auth';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -36,29 +40,41 @@ const useStyles = makeStyles(theme => ({
 
 function Header (){
   const classes = useStyles();
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    history.push('/login');
+  };
 
   return (
     <AppBar position="static">
       <Toolbar>
         <NavLink className={classes.logo} to="/">Apartment Rentals</NavLink>
         <div className={classes.flexGrow} />
-        <NavLink
-          className={classes.link}
-          activeClassName={classes.activeLink}
-          to='/home'
-          exact={true}
-        >
-          <Button color="inherit">HomePage</Button>
-        </NavLink>
-        <NavLink
-          className={classes.link}
-          activeClassName={classes.activeLink}
-          to='/user'
-          exact={true}
-        >
-          <Button color="inherit">Users</Button>
-        </NavLink>
-        <IconButton aria-label="logout" color="inherit">
+        {isAdmin(user.role) && (
+          <>
+            <NavLink
+              className={classes.link}
+              activeClassName={classes.activeLink}
+              to='/home'
+              exact={true}
+            >
+              <Button color="inherit">HomePage</Button>
+            </NavLink>
+            <NavLink
+              className={classes.link}
+              activeClassName={classes.activeLink}
+              to='/users'
+              exact={true}
+            >
+              <Button color="inherit">Users</Button>
+            </NavLink>
+          </>
+        )}
+        <IconButton aria-label="logout" color="inherit" onClick={handleLogout}>
           <InputIcon />
         </IconButton>
       </Toolbar>
