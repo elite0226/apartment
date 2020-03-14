@@ -1,11 +1,12 @@
 import React from 'react';
-import { compose, withProps } from 'recompose';
+import { compose, withProps, withHandlers } from 'recompose';
 import {
   withScriptjs,
   withGoogleMap,
   GoogleMap,
-  Marker
+  Marker,
 } from 'react-google-maps';
+import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 
 const ApartmentMap = compose(
   withProps({
@@ -19,14 +20,33 @@ const ApartmentMap = compose(
     containerElement: <div style={{ position: 'relative', top: '8px', height: 'calc(100vh - 80px)', width: '100%' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
+  withHandlers({
+    onMarkerClustererClick: () => (markerClusterer) => {
+      const clickedMarkers = markerClusterer.getMarkers()
+      console.log(`Current clicked markers length: ${clickedMarkers.length}`)
+      console.log(clickedMarkers)
+    },
+  }),
   withScriptjs,
   withGoogleMap
 )(props => (
   <GoogleMap
     defaultZoom={8}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
+    defaultCenter={{ lat: 40.714224, lng: -73.961452 }}
   >
-    <Marker position={{ lat: -34.397, lng: 150.644 }} onClick={props.onMarkerClick} />
+    <MarkerClusterer
+      onClick={props.onMarkerClustererClick}
+      averageCenter
+      enableRetinaIcons
+      gridSize={60}
+    >
+      {props.apartments.map(apartment => (
+        <Marker
+          key={apartment.id}
+          position={{ lat: apartment.latitude, lng: apartment.longitude }}
+        />
+      ))}
+    </MarkerClusterer>
   </GoogleMap>
 ));
 

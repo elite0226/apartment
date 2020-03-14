@@ -77,7 +77,7 @@ function ApartmentCard({ apartment }) {
           <Chip
             size="small"
             label={apartment.status}
-            color="secondary"
+            color={apartment.status === 'RENTED' ? 'secondary' : 'primary'}
           />
         }
         title={`${apartment.realtor.firstName} ${apartment.realtor.lastName}`}

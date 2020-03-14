@@ -57,7 +57,9 @@ class ApartmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = Apartment.objects.all()
-        if self.request.user.config.role == UserConfig.USER_ROLE_REALTOR:
+        if self.request.user.config.role == UserConfig.USER_ROLE_CLIENT:
+            qs = qs.filter(status=Apartment.APARTMENT_AVAILABLE)
+        elif self.request.user.config.role == UserConfig.USER_ROLE_REALTOR:
             qs = qs.filter(realtor=self.request.user)
 
         size = self.request.query_params.get('size', None)
