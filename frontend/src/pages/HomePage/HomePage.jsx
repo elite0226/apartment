@@ -29,7 +29,7 @@ function HomePage () {
         </Grid>
         <Grid item md={6}>
           <Typography variant="h5">Available Apartments</Typography>
-          <ApartmentList />
+          <ApartmentList apartments={apartments} />
         </Grid>
       </Grid>
     </Container>
