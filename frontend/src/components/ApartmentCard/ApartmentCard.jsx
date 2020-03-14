@@ -1,52 +1,30 @@
 import React from 'react';
+import clsx from 'clsx';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
+  Box,
   Card,
   CardActions,
   CardContent,
   CardHeader,
   Chip,
+  IconButton,
   Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { red } from '@material-ui/core/colors';
 import LocationIcon from '@material-ui/icons/LocationOn';
+import DeleteIcon from '@material-ui/icons/DeleteForever';
+import UpdateIcon from '@material-ui/icons/Create';
 import Geocode from 'react-geocode';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-  cardTitle: {
-    textTransform: 'capitalize',
-  },
-  divider: {
-    margin: theme.spacing(0, 2),
-  },
-  actionsPadding: {
-    padding: theme.spacing(1, 2),
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  justify: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fs13: {
-    fontSize: '13px',
-  },
-  mr4: {
-    marginRight: '4px',
-  },
-}));
+import { deleteApartment } from '../../store/reducers/apartment';
+import useStyles from './style';
 
 function ApartmentCard({ apartment }) {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
 
@@ -60,7 +38,16 @@ function ApartmentCard({ apartment }) {
         console.error(error);
       }
     );
-  }
+  };
+
+  const handleEditApartment = () => {
+    history.push(`/apartment/${apartment.id}`);
+  };
+
+  const handleDeleteApartment = () => {
+    // TODO: confirm deletion
+    dispatch(deleteApartment({ id: apartment.id }));
+  };
 
   return (
     <Card className={classes.root}>
@@ -74,33 +61,46 @@ function ApartmentCard({ apartment }) {
           </Avatar>
         }
         action={
-          <Chip
-            size="small"
-            label={apartment.status}
-            color={apartment.status === 'RENTED' ? 'secondary' : 'primary'}
-          />
+          <Box className={classes.actions}>
+            <IconButton color="primary" onClick={handleEditApartment}>
+              <UpdateIcon fontSize="small" />
+            </IconButton>
+            <IconButton color="secondary" onClick={handleDeleteApartment}>
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          </Box>
         }
         title={`${apartment.realtor.firstName} ${apartment.realtor.lastName}`}
         subheader={apartment.addedDate}
       />
       <CardContent>
         <Typography gutterBottom variant="h6" component="h2">
-          {apartment.name}
+          {apartment.name} 
+          <Chip
+            size="small"
+            label={apartment.status}
+            color={apartment.status === 'AVAILABLE' ? 'primary' : 'secondary'}
+            classes={{
+              root: classes.status,
+              colorPrimary: classes.availableStatus,
+              colorSecondary: classes.rentedStatus,
+            }}
+          />
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography className={classes.description} variant="body2" color="textSecondary" component="p">
           {apartment.description}
         </Typography>
       </CardContent>
       <hr className={classes.divider} />
       <CardActions classes={{ root: classes.actionsPadding }}>
         <Typography classes={{ root: classes.fs13 }}>
-          ${apartment.price}/Month
+          ${apartment.price} / Month
         </Typography>
         <Typography classes={{ root: classes.fs13 }}>
           {apartment.rooms} Room(s)
         </Typography>
         <div className={classes.grow} />
-        <div className={classes.justify}>
+        <div className={clsx(classes.flex, classes.justify)}>
           <LocationIcon className={classes.mr4} fontSize="small" />
           <Typography classes={{ root: classes.fs13 }}>
             Toronto, Canada

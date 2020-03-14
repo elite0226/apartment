@@ -38,25 +38,28 @@ export default createReducer(initialState, {
   }),
 
   [requestSuccess(GET_APARTMENT_REQUEST)]: (state, { payload }) => ({
+    ...state,
     apartment: payload,
     status: requestSuccess(GET_APARTMENT_REQUEST),
     error: null,
   }),
 
   [requestFail(GET_APARTMENT_REQUEST)]: (state, { payload }) => ({
+    ...state,
     apartment: null,
     status: requestFail(GET_APARTMENT_REQUEST),
     error: payload.error,
   }),
 
   [requestSuccess(ADD_APARTMENT_REQUEST)]: (state, { payload }) => {
-    state.push(payload);
+    state.apartments.push(payload);
     state.apartment = payload;
     state.status = requestSuccess(ADD_APARTMENT_REQUEST);
     state.error = null;
   },
 
   [requestFail(ADD_APARTMENT_REQUEST)]: (state, { payload }) => ({
+    ...state,
     apartment: null,
     status: requestFail(ADD_APARTMENT_REQUEST),
     error: payload.error,
@@ -64,13 +67,14 @@ export default createReducer(initialState, {
 
   [requestSuccess(UPDATE_APARTMENT_REQUEST)]: (state, { payload }) => {
     const index = state.apartments.findIndex(apartment => apartment.id === payload.id);
-    state.apartments[index] = payload;
+    if (index >= 0) state.apartments[index] = payload;
     state.apartment = payload;
     state.status = requestSuccess(UPDATE_APARTMENT_REQUEST);
     state.error = null;
   },
 
   [requestFail(UPDATE_APARTMENT_REQUEST)]: (state, { payload }) => ({
+    ...state,
     apartment: null,
     status: requestFail(UPDATE_APARTMENT_REQUEST),
     error: payload.error,

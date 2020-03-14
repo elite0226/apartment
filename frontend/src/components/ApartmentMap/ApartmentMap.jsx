@@ -17,7 +17,7 @@ const ApartmentMap = compose(
     googleMapURL:
       `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ position: 'relative', top: '8px', height: 'calc(100vh - 80px)', width: '100%' }} />,
+    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   withHandlers({
@@ -32,20 +32,29 @@ const ApartmentMap = compose(
 )(props => (
   <GoogleMap
     defaultZoom={8}
-    defaultCenter={{ lat: 40.714224, lng: -73.961452 }}
+    defaultCenter={{
+      lat: (props.position && props.position.lat) || 40.714224,
+      lng: (props.position && props.position.lng) || -73.961452,
+    }}
+    onClick={props.onMapClick}
   >
     <MarkerClusterer
-      onClick={props.onMarkerClustererClick}
       averageCenter
       enableRetinaIcons
       gridSize={60}
+      onClick={props.onMarkerClustererClick}
     >
-      {props.apartments.map(apartment => (
+      {props.apartments && props.apartments.map(apartment => (
         <Marker
           key={apartment.id}
           position={{ lat: apartment.latitude, lng: apartment.longitude }}
         />
       ))}
+      {props.position && (
+        <Marker
+          position={props.position}
+        />        
+      )}
     </MarkerClusterer>
   </GoogleMap>
 ));

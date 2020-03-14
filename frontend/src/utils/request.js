@@ -62,6 +62,7 @@ export default ({
 
     successCallback && successCallback(res);
   } catch (err) {
+    console.log('error: ', err);
     yield put({
       type: requestFail(type),
       payload: { error: err.response.data },

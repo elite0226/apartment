@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Header from '../components/Header';
 import HomePage from '../pages/HomePage';
+import ApartmentEditPage from '../pages/ApartmentEdit';
 
 import AdminRoute from './AdminRoute';
 import RealtorRoute from './RealtorRoute';
@@ -29,8 +30,8 @@ function Routes () {
             <AdminRoute path='/users' component={() => <h4>User Page</h4>} />
             <AdminRoute path='/user' exact component={() => <h4>User Create Page</h4>} />
             <AdminRoute path='/user/:id' component={() => <h4>User Edit Page</h4>} />
-            <RealtorRoute path='/realtor' exact component={() => <h4>Realtor Create page</h4>} />
-            <RealtorRoute path='/realtor/:id' component={() => <h4>Realtor Edit page</h4>} />
+            <RealtorRoute path='/apartment' exact component={ApartmentEditPage} />
+            <RealtorRoute path='/apartment/:id' component={ApartmentEditPage} />
           </Switch>
         </>
       )}

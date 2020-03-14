@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+from datetime import date
 
 
 class UserConfig(models.Model):
@@ -33,6 +33,6 @@ class Apartment(models.Model):
     rooms = models.IntegerField(null=False, blank=False)
     latitude = models.FloatField(null=False, blank=False)
     longitude = models.FloatField(null=False, blank=False)
-    added_date = models.DateField(default=timezone.now)
+    added_date = models.DateField(default=date.today())
     status = models.CharField(choices=APARTMENT_STATUS_CHOICES, max_length=10, default=APARTMENT_AVAILABLE)
     realtor = models.ForeignKey(User, related_name='realtor', on_delete=models.CASCADE)

@@ -67,3 +67,6 @@ class ApartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Apartment
         fields = '__all__'
+        extra_kwargs={
+            'added_date': {'read_only': True}
+        }

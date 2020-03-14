@@ -50,7 +50,7 @@ function Header (){
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <NavLink className={classes.logo} to="/">Apartment Rentals</NavLink>
         <div className={classes.flexGrow} />
