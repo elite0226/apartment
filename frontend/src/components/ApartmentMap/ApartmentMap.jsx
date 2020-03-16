@@ -5,8 +5,11 @@ import {
   withGoogleMap,
   GoogleMap,
   Marker,
+  InfoWindow,
 } from 'react-google-maps';
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
+
+import ApartmentCard from '../ApartmentCard';
 
 const ApartmentMap = compose(
   withProps({
@@ -17,7 +20,7 @@ const ApartmentMap = compose(
     googleMapURL:
       `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%' }} />,
+    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%', marginTop: '9px' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   withHandlers({
@@ -44,11 +47,18 @@ const ApartmentMap = compose(
       gridSize={60}
       onClick={props.onMarkerClustererClick}
     >
-      {props.apartments && props.apartments.map(apartment => (
+      {props.apartments && props.apartments.map((apartment, index) => (
         <Marker
           key={apartment.id}
           position={{ lat: apartment.latitude, lng: apartment.longitude }}
-        />
+          onClick={() => props.onToggleOpen(index)}
+        >
+          {props.isOpen[index] && (
+            <InfoWindow onCloseClick={() => props.onToggleOpen(index)}>
+              <ApartmentCard apartment={apartment} actionable={props.actionable} maxWidth="350" />
+            </InfoWindow>
+          )}
+        </Marker>
       ))}
       {props.position && (
         <Marker

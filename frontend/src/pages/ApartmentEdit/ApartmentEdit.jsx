@@ -58,6 +58,7 @@ function ApartmentEdit () {
   };
 
   const handleSubmit = (data) => {
+    console.log('apartment: ', data);
     if (params.id) {
       dispatch(updateApartment({
         id: params.id,
@@ -74,7 +75,7 @@ function ApartmentEdit () {
 
   return (
     <Container maxWidth={false}>
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         <Grid item md={6}>
           <ApartmentMap position={latLng} onMapClick={handleMapClick} />
         </Grid>

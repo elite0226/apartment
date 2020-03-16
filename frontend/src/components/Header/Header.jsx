@@ -54,25 +54,23 @@ function Header (){
       <Toolbar>
         <NavLink className={classes.logo} to="/">Apartment Rentals</NavLink>
         <div className={classes.flexGrow} />
+        <NavLink
+          className={classes.link}
+          activeClassName={classes.activeLink}
+          to='/apartments'
+          exact={true}
+        >
+          <Button color="inherit">Apartments</Button>
+        </NavLink>
         {isAdmin(user.role) && (
-          <>
-            <NavLink
-              className={classes.link}
-              activeClassName={classes.activeLink}
-              to='/home'
-              exact={true}
-            >
-              <Button color="inherit">HomePage</Button>
-            </NavLink>
-            <NavLink
-              className={classes.link}
-              activeClassName={classes.activeLink}
-              to='/users'
-              exact={true}
-            >
-              <Button color="inherit">Users</Button>
-            </NavLink>
-          </>
+          <NavLink
+            className={classes.link}
+            activeClassName={classes.activeLink}
+            to='/users'
+            exact={true}
+          >
+            <Button color="inherit">Users</Button>
+          </NavLink>
         )}
         <IconButton aria-label="logout" color="inherit" onClick={handleLogout}>
           <InputIcon />

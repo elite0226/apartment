@@ -6,6 +6,8 @@ import {
   Button,
   Grid,
   InputAdornment,
+  InputLabel,
+  Select,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -18,25 +20,28 @@ import AddressIcon from '@material-ui/icons/PersonPinCircle';
 
 import { GET_APARTMENT_REQUEST } from '../../store/types';
 import { requestSuccess } from '../../utils/request';
+import useStyles from './style';
 
 function ApartmentForm({
   apartment,
   latLng,
   onSubmit,
 }) {
+  const classes = useStyles();
   const params = useParams();
   const history = useHistory();
   const apartmentStatus = useSelector(state => state.apartment.status);
-  const { control, handleSubmit, setValue, errors } = useForm();
+  const { control, handleSubmit, setValue, getValues, errors } = useForm();
 
   useEffect(() => {
     if (!apartment || apartmentStatus !== requestSuccess(GET_APARTMENT_REQUEST)) return;
+    console.log('apartment: ', apartment);
     setValue('name', apartment.name);
+    setValue('status', apartment.status);
     setValue('description', apartment.description);
     setValue('size', apartment.size);
     setValue('price', apartment.price);
     setValue('rooms', apartment.rooms);
-    setValue('status', apartment.statu);
     setValue('latitude', apartment.latitude);
     setValue('longitude', apartment.longitude);
   }, [apartment]);
@@ -51,10 +56,10 @@ function ApartmentForm({
     history.goBack();
   };
 
-  return (
+  return (!params.id || apartment) && (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={1}>
-        <Grid item sm={12}>
+        <Grid item sm={6}>
           <Controller
             as={
               <TextField
@@ -79,6 +84,30 @@ function ApartmentForm({
             defaultValue=""
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="name" />
+        </Grid>
+        <Grid item sm={6}>
+          <Controller
+            as={
+              <>
+                <InputLabel className={classes.label}>Status</InputLabel>
+                <Select
+                  className={classes.select}
+                  defaultValue={(apartment && apartment.status) || 'AVAILABLE'}
+                  onChange={(event) => setValue('status', event.target.value)}
+                  native
+                >
+                  <option value="AVAILABLE">Available</option>
+                  <option value="RENTED">Rented</option>
+                </Select>
+              </>
+            }
+            name="status"
+            control={control}
+            rules={{
+              required: 'status is required',
+            }}
+            defaultValue="AVAILABLE"
+          />
         </Grid>
         <Grid item sm={12}>
           <Controller

@@ -17,7 +17,7 @@ function Routes () {
   return (
     <Switch>
       <Route exact path='/' render={() => {
-        if (isLoggedIn) return (<Redirect to='/home' />);
+        if (isLoggedIn) return (<Redirect to='/apartments' />);
         return (<Redirect to='/login' />);
       }} />
       <Route path='/login' component={Login} />
@@ -26,7 +26,7 @@ function Routes () {
         <>
           <Header />
           <Switch>
-            <Route path='/home' component={HomePage} />
+            <Route path='/apartments' component={HomePage} />
             <AdminRoute path='/users' component={() => <h4>User Page</h4>} />
             <AdminRoute path='/user' exact component={() => <h4>User Create Page</h4>} />
             <AdminRoute path='/user/:id' component={() => <h4>User Edit Page</h4>} />

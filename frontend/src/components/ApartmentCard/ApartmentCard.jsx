@@ -21,7 +21,7 @@ import Geocode from 'react-geocode';
 import { deleteApartment } from '../../store/reducers/apartment';
 import useStyles from './style';
 
-function ApartmentCard({ apartment }) {
+function ApartmentCard({ apartment, maxWidth, actionable }) {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -50,7 +50,12 @@ function ApartmentCard({ apartment }) {
   };
 
   return (
-    <Card className={classes.root}>
+    <Card
+      className={classes.root}
+      style={{
+        maxWidth: maxWidth ? `${maxWidth}px` : 'unset',
+      }}
+    >
       <CardHeader
         classes={{
           title: classes.cardTitle,
@@ -61,14 +66,16 @@ function ApartmentCard({ apartment }) {
           </Avatar>
         }
         action={
-          <Box className={classes.actions}>
-            <IconButton color="primary" onClick={handleEditApartment}>
-              <UpdateIcon fontSize="small" />
-            </IconButton>
-            <IconButton color="secondary" onClick={handleDeleteApartment}>
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </Box>
+          actionable && (
+            <Box className={classes.actions}>
+              <IconButton color="primary" onClick={handleEditApartment}>
+                <UpdateIcon fontSize="small" />
+              </IconButton>
+              <IconButton color="secondary" onClick={handleDeleteApartment}>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          )
         }
         title={`${apartment.realtor.firstName} ${apartment.realtor.lastName}`}
         subheader={apartment.addedDate}
@@ -103,7 +110,7 @@ function ApartmentCard({ apartment }) {
         <div className={clsx(classes.flex, classes.justify)}>
           <LocationIcon className={classes.mr4} fontSize="small" />
           <Typography classes={{ root: classes.fs13 }}>
-            Toronto, Canada
+            {apartment.address}
           </Typography>
         </div>
       </CardActions>

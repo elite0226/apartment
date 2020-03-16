@@ -13,7 +13,7 @@ function RealtorRoute (props) {
       {...rest}
       render={() => {
         if (isRealtorManageAllowed(user.role)) return (<Component {...props} />);
-        return (<Redirect to='/home' />);
+        return (<Redirect to='/apartments' />);
       }}
     />
   );

@@ -13,7 +13,7 @@ function AdminRoute (props) {
       {...rest}
       render={() => {
         if (isAdmin(user.role)) return (<Component {...props} />);
-        return (<Redirect to='/home' />);
+        return (<Redirect to='/apartments' />);
       }}
     />
   );

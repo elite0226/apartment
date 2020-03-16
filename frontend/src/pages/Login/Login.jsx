@@ -53,7 +53,7 @@ function Login () {
   const onSubmit = (data) => {
     dispatch(login({
       body: data,
-      success: () => history.push('/home'),
+      success: () => history.push('/apartments'),
     }));
   }
 
