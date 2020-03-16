@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import HomePage from '../pages/HomePage';
 import ApartmentEditPage from '../pages/ApartmentEdit';
 import UserListPage from '../pages/UserList';
+import UserEditPage from '../pages/UserEdit';
 
 import AdminRoute from './AdminRoute';
 import RealtorRoute from './RealtorRoute';
@@ -29,8 +30,8 @@ function Routes () {
           <Switch>
             <Route path='/apartments' component={HomePage} />
             <AdminRoute path='/users' component={UserListPage} />
-            <AdminRoute path='/user' exact component={() => <h4>User Create Page</h4>} />
-            <AdminRoute path='/user/:id' component={() => <h4>User Edit Page</h4>} />
+            <AdminRoute path='/user' exact component={UserEditPage} />
+            <AdminRoute path='/user/:id' component={UserEditPage} />
             <RealtorRoute path='/apartment' exact component={ApartmentEditPage} />
             <RealtorRoute path='/apartment/:id' component={ApartmentEditPage} />
           </Switch>

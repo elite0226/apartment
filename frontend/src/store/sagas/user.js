@@ -29,7 +29,7 @@ const createUser = request({
 
 const updateUser = request({
   type: UPDATE_USER_REQUEST,
-  method: 'put',
+  method: 'patch',
   path: ({ payload }) => `/api/user/${payload.id}/`,
 });
 

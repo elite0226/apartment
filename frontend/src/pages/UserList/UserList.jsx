@@ -14,7 +14,7 @@ import {
   TablePagination,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@material-ui/icons/DeleteForever';
 
 import useStyles from './style';
 import UserTableHeader from '../../components/UserTableHeader';
@@ -87,10 +87,10 @@ function UserList() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.config.role}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleEditUser(user.id)}>
+                    <IconButton color="primary" onClick={() => handleEditUser(user.id)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDeleteUser(user.id)}>
+                    <IconButton color="secondary" onClick={() => handleDeleteUser(user.id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
