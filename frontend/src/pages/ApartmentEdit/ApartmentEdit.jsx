@@ -58,7 +58,6 @@ function ApartmentEdit () {
   };
 
   const handleSubmit = (data) => {
-    console.log('apartment: ', data);
     if (params.id) {
       dispatch(updateApartment({
         id: params.id,

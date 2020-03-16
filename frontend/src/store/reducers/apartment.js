@@ -87,6 +87,7 @@ export default createReducer(initialState, {
   },
 
   [requestFail(DELETE_APARTMENT_REQUEST)]: (state, { payload }) => ({
+    ...state,
     status: requestFail(DELETE_APARTMENT_REQUEST),
     error: payload.error,
   }),

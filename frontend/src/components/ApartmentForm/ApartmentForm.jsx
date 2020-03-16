@@ -30,12 +30,12 @@ function ApartmentForm({
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
+  const user = useSelector(state => state.auth.user);
   const apartmentStatus = useSelector(state => state.apartment.status);
-  const { control, handleSubmit, setValue, getValues, errors } = useForm();
+  const { control, handleSubmit, setValue, errors } = useForm();
 
   useEffect(() => {
     if (!apartment || apartmentStatus !== requestSuccess(GET_APARTMENT_REQUEST)) return;
-    console.log('apartment: ', apartment);
     setValue('name', apartment.name);
     setValue('status', apartment.status);
     setValue('description', apartment.description);
@@ -59,7 +59,7 @@ function ApartmentForm({
   return (!params.id || apartment) && (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={1}>
-        <Grid item sm={6}>
+        <Grid item sm={4}>
           <Controller
             as={
               <TextField
@@ -85,7 +85,29 @@ function ApartmentForm({
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="name" />
         </Grid>
-        <Grid item sm={6}>
+        <Grid item sm={4}>
+          <Controller
+            as={
+              <>
+                <InputLabel className={classes.label}>Associated realtor</InputLabel>
+                <Select
+                  className={classes.select}
+                  onChange={(event) => setValue('realtor', event.target.value)}
+                  native
+                >
+                  <option value={user.id}>{`${user.firstName} ${user.lastName}`}</option>
+                </Select>
+              </>
+            }
+            name="realtor"
+            control={control}
+            rules={{
+              required: 'Realtor is required',
+            }}
+            defaultValue=""
+          />
+        </Grid>
+        <Grid item sm={4}>
           <Controller
             as={
               <>

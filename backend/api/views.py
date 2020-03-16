@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
@@ -48,7 +49,10 @@ class UserViewSet(viewsets.ModelViewSet):
     model = User
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminRole]
-    queryset = User.objects.all()
+
+    def get_queryset(self):
+        qs = User.objects.all().filter(~Q(config__role=UserConfig.USER_ROLE_ADMIN))
+        return qs
 
 class ApartmentViewSet(viewsets.ModelViewSet):
     model = Apartment
