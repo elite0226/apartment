@@ -4,6 +4,7 @@ import {
   Container,
   Grid,
 } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 
 // import LoadingFallback from '../../components/LoadingFallback';
 import ApartmentMap from '../../components/ApartmentMap';
@@ -25,6 +26,8 @@ function HomePage () {
   // const apartmentError = useSelector(state => state.apartment.error);
   // const apartmentStatus = useSelector(state => state.apartment.status);
   const [infoWindowOpen, setInfoWindowOpen] = useState([]);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterParams, setFilterParams] = useState({});
   const debouncedFilterParams = useDebounce(filterParams, 500);
 
@@ -64,12 +67,16 @@ function HomePage () {
     });
   };
 
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
   return (
     <Container maxWidth={false}>
       <Grid container spacing={4}>
         <Grid className={classes.noPadding} item md={6}>
           <ApartmentMap
-            apartments={apartments}
+            apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
             actionable={isRealtorManageAllowed(role)}
             isOpen={infoWindowOpen}
             onToggleOpen={toggleOpenInfoWindow}
@@ -78,7 +85,12 @@ function HomePage () {
         <Grid className={classes.noPadding} item md={6}>
           <ApartmentHeader />
           <ApartmentFilter filterParams={filterParams} onChangeFilterParams={handleChangeFilterParams}/>
-          <ApartmentList apartments={apartments} />
+          <ApartmentList
+            apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+          />
+          <div className={classes.pagination}>
+            <Pagination count={Math.ceil(apartments.length / rowsPerPage)} page={page} onChange={handlePageChange} />
+          </div>
         </Grid>
       </Grid>
     </Container>
