@@ -18,10 +18,9 @@ import LocationIcon from '@material-ui/icons/LocationOn';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import UpdateIcon from '@material-ui/icons/Create';
 import { useSnackbar } from 'notistack';
-import Geocode from 'react-geocode';
 
-import { deleteApartment } from '../../store/reducers/apartment';
 import useStyles from './style';
+import { deleteApartment } from '../../store/reducers/apartment';
 
 function ApartmentCard({ apartment, maxWidth, actionable }) {
   const classes = useStyles();
@@ -29,20 +28,6 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const confirm = useConfirm();
-
-  Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
-
-  const getAddress = (lat, lng) => {
-    Geocode.fromLatLng(lat, lng).then(
-      response => {
-        const address = response.results[0].formatted_address;
-        console.log(address);
-      },
-      error => {
-        console.error(error);
-      }
-    );
-  };
 
   const handleEditApartment = () => {
     history.push(`/apartment/${apartment.id}`);
@@ -59,6 +44,11 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
         },
       }));
     });
+  };
+
+  const renderAddress = (address) => {
+    const splitedArray = address.split(',');
+    return splitedArray.slice(splitedArray.length - 2).join(', ');
   };
 
   return (
@@ -122,7 +112,7 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
         <div className={clsx(classes.flex, classes.justify)}>
           <LocationIcon className={classes.mr4} fontSize="small" />
           <Typography classes={{ root: classes.fs13 }}>
-            {apartment.address}
+            {renderAddress(apartment.address)}
           </Typography>
         </div>
       </CardActions>

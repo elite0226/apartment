@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withProps, withHandlers } from 'recompose';
+import { compose, withProps } from 'recompose';
 import {
   withScriptjs,
   withGoogleMap,
@@ -23,13 +23,6 @@ const ApartmentMap = compose(
     containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%', marginTop: '24px' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
-  withHandlers({
-    onMarkerClustererClick: () => (markerClusterer) => {
-      const clickedMarkers = markerClusterer.getMarkers()
-      console.log(`Current clicked markers length: ${clickedMarkers.length}`)
-      console.log(clickedMarkers)
-    },
-  }),
   withScriptjs,
   withGoogleMap
 )(props => (
@@ -45,7 +38,6 @@ const ApartmentMap = compose(
       averageCenter
       enableRetinaIcons
       gridSize={60}
-      onClick={props.onMarkerClustererClick}
     >
       {props.apartments && props.apartments.map((apartment, index) => (
         <Marker
@@ -55,7 +47,7 @@ const ApartmentMap = compose(
         >
           {props.isOpen[index] && (
             <InfoWindow onCloseClick={() => props.onToggleOpen(index)}>
-              <ApartmentCard apartment={apartment} actionable={props.actionable} maxWidth="400" />
+              <ApartmentCard apartment={apartment} actionable={props.actionable} maxWidth="420" />
             </InfoWindow>
           )}
         </Marker>

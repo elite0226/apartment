@@ -19,7 +19,7 @@ import { GET_APARTMENTS_REQUEST } from '../../store/types';
 import { isRealtorManageAllowed } from '../../utils/role';
 import useStyles from './style';
 
-function HomePage () {
+function ApartmentContainer () {
   const classes = useStyles();
   const dispatch = useDispatch();
   const apartments = useSelector(state => state.apartment.apartments);
@@ -37,7 +37,7 @@ function HomePage () {
   }, []);
 
   useEffect(() => {
-    if (apartments.length == 0) return;
+    if (apartments.length === 0) return;
     setInfoWindowOpen(new Array(apartments.length).fill(false));
 
     if (apartments.length > 0 && apartments.length % rowsPerPage === 0 && apartments.length / rowsPerPage <= page - 1) {
@@ -128,4 +128,4 @@ function HomePage () {
   );
 }
 
-export default HomePage;
+export default ApartmentContainer;

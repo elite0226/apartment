@@ -52,6 +52,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = User.objects.all().filter(~Q(config__role=UserConfig.USER_ROLE_ADMIN))
+
+        role = self.request.query_params.get('role', None)
+        if role is not None:
+            qs = qs.filter(config__role=role)
+
         return qs
 
 class ApartmentViewSet(viewsets.ModelViewSet):
@@ -81,9 +86,9 @@ class ApartmentViewSet(viewsets.ModelViewSet):
         return qs.order_by('-added_date').order_by('price')
 
     def perform_create(self, serializer):
-        realtor_id = self.request.data.get('realtor', None)
+        realtor_id = self.request.data.get('realtor_id', None)
         if realtor_id is not None:
-            realtor = User.get(id=realtor_id)
+            realtor = User.objects.get(id=realtor_id)
         else:
             realtor = self.request.user
 

@@ -5,7 +5,7 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import Header from '../components/Header';
-import HomePage from '../pages/HomePage';
+import ApartmentContainerPage from '../pages/ApartmentContainer';
 import ApartmentEditPage from '../pages/ApartmentEdit';
 import UserListPage from '../pages/UserList';
 import UserEditPage from '../pages/UserEdit';
@@ -28,7 +28,7 @@ function Routes () {
         <>
           <Header />
           <Switch>
-            <Route path='/apartments' component={HomePage} />
+            <Route path='/apartments' component={ApartmentContainerPage} />
             <AdminRoute path='/users' component={UserListPage} />
             <AdminRoute path='/user' exact component={UserEditPage} />
             <AdminRoute path='/user/:id' component={UserEditPage} />

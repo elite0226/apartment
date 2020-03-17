@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { useForm, Controller, ErrorMessage } from 'react-hook-form';
 import {
@@ -18,9 +18,12 @@ import RoomIcon from '@material-ui/icons/ContactSupport';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import AddressIcon from '@material-ui/icons/PersonPinCircle';
 
-import { GET_APARTMENT_REQUEST } from '../../store/types';
-import { requestSuccess } from '../../utils/request';
 import useStyles from './style';
+import { GET_APARTMENT_REQUEST } from '../../store/types';
+import { getUsers } from '../../store/reducers/user';
+import { requestSuccess } from '../../utils/request';
+import { isAdmin, isRealtor } from '../../utils/role';
+import { fromLatLng } from '../../utils/geocode';
 
 function ApartmentForm({
   apartment,
@@ -30,13 +33,35 @@ function ApartmentForm({
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
+  const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
+  const users = useSelector(state => state.user.users);
   const apartmentStatus = useSelector(state => state.apartment.status);
   const { control, handleSubmit, setValue, errors } = useForm();
+  
+  const [realtors, setRealtors] = useState([]);
+
+  useEffect(() => {
+    if (isAdmin(user.role)) {
+      dispatch(getUsers({
+        params: { role: 'REALTOR' },
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isAdmin(user.role) && users.length > 0) {
+      setRealtors(users);
+    } else if (isRealtor(user.role)) {
+      setRealtors([user]);
+      setValue('realtorId', user.id);
+    }
+  }, [users]);
 
   useEffect(() => {
     if (!apartment || apartmentStatus !== requestSuccess(GET_APARTMENT_REQUEST)) return;
     setValue('name', apartment.name);
+    setValue('realtorId', apartment.realtor.id);
     setValue('status', apartment.status);
     setValue('description', apartment.description);
     setValue('size', apartment.size);
@@ -44,13 +69,16 @@ function ApartmentForm({
     setValue('rooms', apartment.rooms);
     setValue('latitude', apartment.latitude);
     setValue('longitude', apartment.longitude);
+    setValue('address', apartment.address);
   }, [apartment]);
 
   useEffect(() => {
     if (!latLng) return;
     setValue('latitude', latLng.lat);
     setValue('longitude', latLng.lng);
-  }, [latLng])
+    fromLatLng(latLng.lat, latLng.lng)
+      .then(address => setValue('address', address));
+  }, [latLng]);
 
   const handleGoBack = () => {
     history.goBack();
@@ -85,28 +113,37 @@ function ApartmentForm({
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="name" />
         </Grid>
-        {/* <Grid item sm={4}>
+        <Grid item sm={4}>
           <Controller
             as={
               <>
                 <InputLabel className={classes.label}>Associated realtor</InputLabel>
                 <Select
                   className={classes.select}
-                  onChange={(event) => setValue('realtor', event.target.value)}
+                  defaultValue={(apartment && apartment.realtor.id) || ''}
+                  onChange={(event) => setValue('realtorId', event.target.value)}
                   native
                 >
-                  <option value={user.id}>{`${user.firstName} ${user.lastName}`}</option>
+                  {isAdmin(user.role) && (
+                    <option value="" />
+                  )}
+                  {realtors.map(realtor => (
+                    <option key={realtor.id} value={realtor.id}>
+                      {`${realtor.firstName} ${realtor.lastName}`}
+                    </option>
+                  ))}
                 </Select>
               </>
             }
-            name="realtor"
+            name="realtorId"
             control={control}
             rules={{
               required: 'Realtor is required',
             }}
             defaultValue=""
           />
-        </Grid> */}
+          <ErrorMessage as={<Typography color="error" />} errors={errors} name="realtorId" />
+        </Grid>
         <Grid item sm={4}>
           <Controller
             as={
@@ -130,6 +167,7 @@ function ApartmentForm({
             }}
             defaultValue="AVAILABLE"
           />
+          <ErrorMessage as={<Typography color="error" />} errors={errors} name="status" />
         </Grid>
         <Grid item sm={12}>
           <Controller
@@ -283,19 +321,25 @@ function ApartmentForm({
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="longitude" />
         </Grid>
         <Grid item sm={12}>
-          <TextField
-            margin="normal"
-            fullWidth
-            label="Address"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <AddressIcon />
-                </InputAdornment>
-              ),
-            }}
-            value="Toronto, Canada"
-            disabled
+          <Controller
+            as={
+              <TextField
+                margin="normal"
+                fullWidth
+                label="Address"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AddressIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                disabled
+              />
+            }
+            name="address"
+            control={control}
+            defaultValue=""
           />
         </Grid>
         <Grid container>
