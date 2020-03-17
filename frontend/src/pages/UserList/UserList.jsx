@@ -13,6 +13,7 @@ import {
   TableCell,
   TablePagination,
 } from '@material-ui/core';
+import { useConfirm } from 'material-ui-confirm';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
@@ -25,6 +26,7 @@ function UserList() {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const confirm = useConfirm();
   const users = useSelector(state => state.user.users);
   // const userStatus = useSelector(state => state.user.status);
 
@@ -44,10 +46,13 @@ function UserList() {
   };
 
   const handleDeleteUser = (id) => {
-    // TODO: confirm delte
-    dispatch(deleteUser({
-      id,
-    }));
+    confirm({
+      description: 'Are you going to delete this user?',
+    }).then(() => {
+      dispatch(deleteUser({
+        id,
+      }));
+    });
   };
 
   const handleChangePage = (event, newPage) => {

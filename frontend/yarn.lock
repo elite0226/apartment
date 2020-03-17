@@ -6718,6 +6718,11 @@ markerwithlabel@^2.0.1:
   resolved "https://registry.yarnpkg.com/markerwithlabel/-/markerwithlabel-2.0.2.tgz#fa6aee4abb0ee553e24e2b708226858f58b8729e"
   integrity sha512-C/cbm1A0h/u54gwHk5ZJNdUU3V3+1BbCpRPMsMyFA7vF4yL+aB4rWpxACz29TpQ+cTg6/iQroExh0PMSRGtQFg==
 
+material-ui-confirm@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/material-ui-confirm/-/material-ui-confirm-2.0.4.tgz#9efd7ecaac97e2dac9f44546a84ea1aba0529559"
+  integrity sha512-oqK5kc37eoiwdTJlX0n9GwFl01DF21rikf2ZpqZrm9EwRT9otnRhlXVFN5Mw2yni+9Je5CKWrVvi3CR+qsXnYQ==
+
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"

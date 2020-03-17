@@ -7,7 +7,6 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 
 import ApartmentMap from '../../components/ApartmentMap';
 import ApartmentForm from '../../components/ApartmentForm';
@@ -16,14 +15,7 @@ import { getApartment, addApartment, updateApartment } from '../../store/reducer
 import { GET_APARTMENT_REQUEST } from '../../store/types';
 import { requestSuccess } from '../../utils/request';
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: theme.spacing(8, 2),
-    alignItems: 'center',
-  }
-}));
+import useStyles from './style';
 
 function ApartmentEdit () {
   const classes = useStyles();
@@ -74,11 +66,11 @@ function ApartmentEdit () {
 
   return (
     <Container maxWidth={false}>
-      <Grid container spacing={2}>
-        <Grid item md={6}>
+      <Grid container spacing={4}>
+        <Grid className={classes.noPadding} item md={6}>
           <ApartmentMap position={latLng} onMapClick={handleMapClick} />
         </Grid>
-        <Grid item md={6}>
+        <Grid className={classes.noPadding} item md={6}>
           <Box className={classes.paper}>
             <Typography variant="h4">
               {params.id ? 'Edit apartment' : 'Add a new apartment'}

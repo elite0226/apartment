@@ -13,6 +13,7 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
+import { useConfirm } from 'material-ui-confirm';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import UpdateIcon from '@material-ui/icons/Create';
@@ -25,6 +26,7 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const confirm = useConfirm();
 
   Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAP_API_KEY);
 
@@ -45,8 +47,11 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
   };
 
   const handleDeleteApartment = () => {
-    // TODO: confirm deletion
-    dispatch(deleteApartment({ id: apartment.id }));
+    confirm({
+      description: 'Are you going to delete this apartment?',
+    }).then(() => {
+      dispatch(deleteApartment({ id: apartment.id }));
+    });
   };
 
   return (
@@ -101,10 +106,10 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
       <hr className={classes.divider} />
       <CardActions classes={{ root: classes.actionsPadding }}>
         <Typography classes={{ root: classes.fs13 }}>
-          ${apartment.price} / Month
+          ${apartment.price}/Month
         </Typography>
         <Typography classes={{ root: classes.fs13 }}>
-          {apartment.rooms} Room(s)
+          {apartment.rooms} Room(s) / {apartment.size} m<sup>2</sup>
         </Typography>
         <div className={classes.grow} />
         <div className={clsx(classes.flex, classes.justify)}>

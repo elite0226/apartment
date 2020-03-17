@@ -20,7 +20,7 @@ const ApartmentMap = compose(
     googleMapURL:
       `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%', marginTop: '9px' }} />,
+    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%', marginTop: '24px' }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   withHandlers({
@@ -55,7 +55,7 @@ const ApartmentMap = compose(
         >
           {props.isOpen[index] && (
             <InfoWindow onCloseClick={() => props.onToggleOpen(index)}>
-              <ApartmentCard apartment={apartment} actionable={props.actionable} maxWidth="350" />
+              <ApartmentCard apartment={apartment} actionable={props.actionable} maxWidth="400" />
             </InfoWindow>
           )}
         </Marker>
