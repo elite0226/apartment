@@ -15,7 +15,6 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   AccountCircle,
   Drafts,
@@ -26,40 +25,10 @@ import {
 } from '@material-ui/icons';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
+import useStyles from './style';
 import { signup } from '../../store/reducers/auth';
 import { requestFail } from '../../utils/request';
 import { SIGNUP_REQUEST } from '../../store/types';
-
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(15),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  label: {
-    fontSize: '12px',
-  },
-  select: {
-    width: '100%',
-    marginTop: '4px',
-    paddingLeft: '6px',
-  },
-  errorPane: {
-    marginBottom: theme.spacing(3),
-  },
-}));
 
 export default function SignUp() {
   const classes = useStyles();

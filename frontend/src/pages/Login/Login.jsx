@@ -13,35 +13,15 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import AccountIcon from '@material-ui/icons/AccountCircle';
 import LockIcon from '@material-ui/icons/Lock';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
+import useStyles from './style';
 import { login } from '../../store/reducers/auth';
 import { requestFail } from '../../utils/request';
 import { LOGIN_REQUEST } from '../../store/types';
-
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(20),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
 function Login () {
   const classes = useStyles();

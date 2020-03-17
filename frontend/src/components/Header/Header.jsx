@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/styles';
 import {
   AppBar,
   Button,
@@ -10,35 +9,11 @@ import {
 } from '@material-ui/core';
 import InputIcon from '@material-ui/icons/Input';
 
+import useStyles from './style';
 import { isAdmin } from '../../utils/role';
 import { logout } from '../../store/reducers/auth';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    boxShadow: 'none',
-  },
-  flexGrow: {
-    flexGrow: 1,
-  },
-  signOutButton: {
-    marginLeft: '8px',
-  },
-  logo: {
-    fontSize: '20px',
-    color: 'white',
-    textDecoration: 'none',
-  },
-  link: {
-    marginRight: '16px',
-    color: '#FFFFFF',
-    textDecoration: 'none',
-  },
-  activeLink: {
-    color: 'orange',
-  },
-}));
-
-function Header (){
+function Header() {
   const classes = useStyles();
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
