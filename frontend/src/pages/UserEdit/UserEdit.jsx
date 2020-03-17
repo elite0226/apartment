@@ -20,18 +20,28 @@ import {
   LockOpen,
   Person,
 } from '@material-ui/icons';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { useSnackbar } from 'notistack';
 
 import useStyles from './style';
 import { getUser, addUser, updateUser } from '../../store/reducers/user';
+import {
+  GET_USER_REQUEST,
+  ADD_USER_REQUEST,
+  UPDATE_USER_REQUEST,
+} from '../../store/types';
+import { requestFail } from '../../utils/request';
 
 function UserEdit() {
   const classes = useStyles();
   const { control, handleSubmit, watch, errors, setValue } = useForm();
+  const snackbar = useSnackbar();
   const history = useHistory();
   const params = useParams();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
   const userError = useSelector(state => state.user.error);
+  const userStatus = useSelector(state => state.user.status);
 
   useEffect(() => {
     if (params.id) {
@@ -54,20 +64,33 @@ function UserEdit() {
       dispatch(updateUser({
         id: params.id,
         body: data,
-        success: () => history.push('/users'),
+        success: (res) => {
+          snackbar.enqueueSnackbar('Update user successfully', { variant: 'success' });
+          history.push('/users');
+        },
       }));
     } else {
       dispatch(addUser({
         body: data,
-        success: () => history.push('/users'),
+        success: (res) => {
+          snackbar.enqueueSnackbar('Create a new user successfully', { variant: 'success' });
+          history.push('/users');
+        },
       }));
     }
   };
 
-  const getErrorText = () => {
-    return userError ?
-      Object.keys(userError).map((key) => (
-        <div key={key}>{userError[key]}</div>
+  const isRequestFailed = (status) => {
+    return status === requestFail(GET_USER_REQUEST)
+      || status === requestFail(ADD_USER_REQUEST)
+      || status === requestFail(UPDATE_USER_REQUEST);
+  };
+
+  const getErrorText = (error) => {
+    if (error.status === 401) return 'Error 401 (Unauthorized)';
+    return error ?
+      Object.keys(error.data).map((key) => (
+        <div key={key}>{error.data[key]}</div>
       )) : '';
   };
 
@@ -77,6 +100,12 @@ function UserEdit() {
         <Typography component="h1" variant="h4">
           {params.id ? 'Update user' : 'Add a new user'}
         </Typography>
+        {isRequestFailed(userStatus) && (
+          <Alert className={classes.errorPane} severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {getErrorText(userError)}
+          </Alert>
+        )}
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

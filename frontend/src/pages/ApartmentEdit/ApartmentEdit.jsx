@@ -7,13 +7,18 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import { useSnackbar } from 'notistack';
 
 import ApartmentMap from '../../components/ApartmentMap';
 import ApartmentForm from '../../components/ApartmentForm';
-import LoadingFallback from '../../components/LoadingFallback';
 import { getApartment, addApartment, updateApartment } from '../../store/reducers/apartment';
-import { GET_APARTMENT_REQUEST } from '../../store/types';
-import { requestSuccess } from '../../utils/request';
+import {
+  GET_APARTMENT_REQUEST,
+  ADD_APARTMENT_REQUEST,
+  UPDATE_APARTMENT_REQUEST,
+} from '../../store/types';
+import { requestSuccess, requestFail } from '../../utils/request';
 
 import useStyles from './style';
 
@@ -21,9 +26,11 @@ function ApartmentEdit () {
   const classes = useStyles();
   const params = useParams();
   const history = useHistory();
+  const snackbar = useSnackbar();
   const dispatch = useDispatch();
   const apartment = useSelector(state => state.apartment.apartment);
   const apartmentStatus = useSelector(state => state.apartment.status);
+  const apartmentError = useSelector(state => state.apartment.error);
   const [latLng, setLatLng] = useState();
 
   useEffect(() => {
@@ -54,15 +61,35 @@ function ApartmentEdit () {
       dispatch(updateApartment({
         id: params.id,
         body: data,
-        success: (res) => history.goBack(),
+        success: (res) => {
+          snackbar.enqueueSnackbar('Update apartment successfully', { variant: 'success' });
+          history.goBack();
+        },
       }));
     } else {
       dispatch(addApartment({
         body: data,
-        success: (res) => history.goBack(),
+        success: (res) => {
+          snackbar.enqueueSnackbar('Create a new apartment successfully', { variant: 'success' });
+          history.goBack();
+        },
       }));
     }
-  }
+  };
+
+  const isRequestFailed = (status) => {
+    return status === requestFail(GET_APARTMENT_REQUEST)
+      || status === requestFail(ADD_APARTMENT_REQUEST)
+      || status === requestFail(UPDATE_APARTMENT_REQUEST);
+  };
+
+  const getErrorText = (error) => {
+    if (error.status === 401) return 'Error 401 (Unauthorized)';
+    return error ?
+      Object.keys(error.data).map((key) => (
+        <div key={key}>{error.data[key]}</div>
+      )) : '';
+  };
 
   return (
     <Container maxWidth={false}>
@@ -75,6 +102,12 @@ function ApartmentEdit () {
             <Typography variant="h4">
               {params.id ? 'Edit apartment' : 'Add a new apartment'}
             </Typography>
+            {isRequestFailed(apartmentStatus) && (
+              <Alert className={classes.errorPane} severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {getErrorText(apartmentError)}
+              </Alert>
+            )}
             <ApartmentForm
               latLng={latLng}
               apartment={apartment}

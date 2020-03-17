@@ -5,16 +5,17 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
-// import LoadingFallback from '../../components/LoadingFallback';
+import LoadingFallback from '../../components/LoadingFallback';
 import ApartmentMap from '../../components/ApartmentMap';
 import ApartmentHeader from '../../components/ApartmentHeader';
 import ApartmentList from '../../components/ApartmentList';
 import ApartmentFilter from '../../components/ApartmentFilter';
 import useDebounce from '../../utils/useDebounce';
-// import { requestSuccess } from '../../utils/request';
+import { requestFail, requestPending } from '../../utils/request';
 import { getApartments } from '../../store/reducers/apartment';
-// import { GET_APARTMENTS_REQUEST } from '../../store/types';
+import { GET_APARTMENTS_REQUEST } from '../../store/types';
 import { isRealtorManageAllowed } from '../../utils/role';
 import useStyles from './style';
 
@@ -23,11 +24,11 @@ function HomePage () {
   const dispatch = useDispatch();
   const apartments = useSelector(state => state.apartment.apartments);
   const role = useSelector(state => state.auth.user.role);
-  // const apartmentError = useSelector(state => state.apartment.error);
-  // const apartmentStatus = useSelector(state => state.apartment.status);
+  const apartmentError = useSelector(state => state.apartment.error);
+  const apartmentStatus = useSelector(state => state.apartment.status);
   const [infoWindowOpen, setInfoWindowOpen] = useState([]);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
   const [filterParams, setFilterParams] = useState({});
   const debouncedFilterParams = useDebounce(filterParams, 500);
 
@@ -38,6 +39,10 @@ function HomePage () {
   useEffect(() => {
     if (apartments.length == 0) return;
     setInfoWindowOpen(new Array(apartments.length).fill(false));
+
+    if (apartments.length > 0 && apartments.length % rowsPerPage === 0 && apartments.length / rowsPerPage <= page - 1) {
+      setPage(page - 1);
+    }
   }, [apartments]);
 
   useEffect(() => {
@@ -71,6 +76,37 @@ function HomePage () {
     setPage(value);
   };
 
+  const getErrorText = (error) => {
+    if (error.status === 401) return 'Error 401 (Unauthorized)';
+    return error ?
+      Object.keys(error.data).map((key) => (
+        <div key={key}>{error.data[key]}</div>
+      )) : '';
+  };
+
+  const renderContent = () => {
+    if (apartmentStatus === requestPending(GET_APARTMENTS_REQUEST)) return <LoadingFallback />;
+    if (apartmentStatus === requestFail(GET_APARTMENTS_REQUEST)) {
+      return (
+        <Alert className={classes.errorPane} severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {getErrorText(apartmentError)}
+        </Alert>
+      );
+    }
+
+    return (
+      <>
+        <ApartmentList
+          apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+        />
+        <div className={classes.pagination}>
+          <Pagination count={Math.ceil(apartments.length / rowsPerPage)} page={page} onChange={handlePageChange} />
+        </div>
+      </>      
+    );
+  }
+
   return (
     <Container maxWidth={false}>
       <Grid container spacing={4}>
@@ -82,15 +118,10 @@ function HomePage () {
             onToggleOpen={toggleOpenInfoWindow}
           />
         </Grid>
-        <Grid className={classes.noPadding} item md={6}>
+        <Grid className={classes.noPadding} item md={6} style={{position: 'relative'}}>
           <ApartmentHeader />
           <ApartmentFilter filterParams={filterParams} onChangeFilterParams={handleChangeFilterParams}/>
-          <ApartmentList
-            apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
-          />
-          <div className={classes.pagination}>
-            <Pagination count={Math.ceil(apartments.length / rowsPerPage)} page={page} onChange={handlePageChange} />
-          </div>
+          {renderContent()}
         </Grid>
       </Grid>
     </Container>

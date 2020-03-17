@@ -85,7 +85,7 @@ function ApartmentForm({
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="name" />
         </Grid>
-        <Grid item sm={4}>
+        {/* <Grid item sm={4}>
           <Controller
             as={
               <>
@@ -106,7 +106,7 @@ function ApartmentForm({
             }}
             defaultValue=""
           />
-        </Grid>
+        </Grid> */}
         <Grid item sm={4}>
           <Controller
             as={
@@ -158,6 +158,7 @@ function ApartmentForm({
               <TextField
                 margin="normal"
                 fullWidth
+                type="number"
                 label="Floor area size"
                 InputProps={{
                   startAdornment: (
@@ -183,6 +184,7 @@ function ApartmentForm({
               <TextField
                 margin="normal"
                 fullWidth
+                type="number"
                 label="Price per month"
                 InputProps={{
                   startAdornment: (
@@ -208,6 +210,7 @@ function ApartmentForm({
               <TextField
                 margin="normal"
                 fullWidth
+                type="number"
                 label="Number of rooms"
                 InputProps={{
                   startAdornment: (

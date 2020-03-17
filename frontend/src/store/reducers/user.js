@@ -7,7 +7,7 @@ import {
   UPDATE_USER_REQUEST,
   DELETE_USER_REQUEST,
 } from '../types';
-import { requestSuccess, requestFail } from '../../utils/request';
+import { requestSuccess, requestFail, requestPending } from '../../utils/request';
 
 const initialState = {
   users: [],
@@ -30,6 +30,11 @@ export default createReducer(initialState, {
     error: null,
   }),
 
+  [requestPending(GET_USERS_REQUEST)]: (state, { payload }) => ({
+    ...state,
+    status: requestPending(GET_USERS_REQUEST),
+  }),
+
   [requestFail(GET_USERS_REQUEST)]: (state, { payload }) => ({
     users: [],
     user: null,
@@ -42,6 +47,11 @@ export default createReducer(initialState, {
     user: payload,
     status: requestSuccess(GET_USER_REQUEST),
     error: null,
+  }),
+
+  [requestPending(GET_USER_REQUEST)]: (state, { payload }) => ({
+    ...state,
+    status: requestPending(GET_USER_REQUEST),
   }),
 
   [requestFail(GET_USER_REQUEST)]: (state, { payload }) => ({
@@ -58,6 +68,11 @@ export default createReducer(initialState, {
     state.error = null;
   },
 
+  [requestPending(ADD_USER_REQUEST)]: (state, { payload }) => ({
+    ...state,
+    status: requestPending(ADD_USER_REQUEST),
+  }),
+
   [requestFail(ADD_USER_REQUEST)]: (state, { payload }) => ({
     ...state,
     user: null,
@@ -73,6 +88,11 @@ export default createReducer(initialState, {
     state.error = null;
   },
 
+  [requestPending(UPDATE_USER_REQUEST)]: (state, { payload }) => ({
+    ...state,
+    status: requestPending(UPDATE_USER_REQUEST),
+  }),
+
   [requestFail(UPDATE_USER_REQUEST)]: (state, { payload }) => ({
     ...state,
     user: null,
@@ -85,6 +105,11 @@ export default createReducer(initialState, {
     state.status = requestSuccess(DELETE_USER_REQUEST);
     state.error = null;
   },
+
+  [requestPending(DELETE_USER_REQUEST)]: (state, { payload }) => ({
+    ...state,
+    status: requestPending(DELETE_USER_REQUEST),
+  }),
 
   [requestFail(DELETE_USER_REQUEST)]: (state, { payload }) => ({
     ...state,

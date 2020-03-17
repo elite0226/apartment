@@ -17,6 +17,7 @@ import { useConfirm } from 'material-ui-confirm';
 import LocationIcon from '@material-ui/icons/LocationOn';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import UpdateIcon from '@material-ui/icons/Create';
+import { useSnackbar } from 'notistack';
 import Geocode from 'react-geocode';
 
 import { deleteApartment } from '../../store/reducers/apartment';
@@ -24,6 +25,7 @@ import useStyles from './style';
 
 function ApartmentCard({ apartment, maxWidth, actionable }) {
   const classes = useStyles();
+  const snackbar = useSnackbar();
   const history = useHistory();
   const dispatch = useDispatch();
   const confirm = useConfirm();
@@ -50,7 +52,12 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
     confirm({
       description: 'Are you going to delete this apartment?',
     }).then(() => {
-      dispatch(deleteApartment({ id: apartment.id }));
+      dispatch(deleteApartment({
+        id: apartment.id,
+        success: () => {
+          snackbar.enqueueSnackbar('Delete apartment successfully', { variant: 'success' });
+        },
+      }));
     });
   };
 
@@ -66,7 +73,7 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
           title: classes.cardTitle,
         }}
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
+          <Avatar className={classes.avatar}>
             {apartment.realtor.firstName[0].toUpperCase()}
           </Avatar>
         }

@@ -10,4 +10,8 @@ export default makeStyles(theme => ({
   noPadding: {
     padding: '0px 16px !important',
   },
+  errorPane: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+  },
 }));
