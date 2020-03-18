@@ -58,8 +58,8 @@ function ApartmentContainer () {
   }, [debouncedFilterParams]);
 
   const toggleOpenInfoWindow = (index) => {
-    const newInfoWindowOpen = new Array(...infoWindowOpen);
-    newInfoWindowOpen[index] = !newInfoWindowOpen[index];
+    const newInfoWindowOpen = new Array(apartments.length).fill(false);
+    newInfoWindowOpen[index] = !infoWindowOpen[index];
     setInfoWindowOpen(newInfoWindowOpen);
   }
 
@@ -74,6 +74,18 @@ function ApartmentContainer () {
 
   const handlePageChange = (event, value) => {
     setPage(value);
+    setInfoWindowOpen(new Array(apartments.length).fill(false));
+  };
+
+  const handleClickApartment = (apartmentId) => {
+    const apartmentIndex = apartments
+      .slice((page - 1) * rowsPerPage, page * rowsPerPage)
+      .findIndex(apartment => apartment.id === apartmentId);
+    if (apartmentIndex < 0) return;
+
+    const newInfoWindowOpen = new Array(apartments.length).fill(false);
+    newInfoWindowOpen[apartmentIndex] = true;
+    setInfoWindowOpen(newInfoWindowOpen);
   };
 
   const getErrorText = (error) => {
@@ -99,6 +111,7 @@ function ApartmentContainer () {
       <>
         <ApartmentList
           apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+          onClickApartment={handleClickApartment}
         />
         <div className={classes.pagination}>
           <Pagination count={Math.ceil(apartments.length / rowsPerPage)} page={page} onChange={handlePageChange} />

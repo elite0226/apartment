@@ -4,6 +4,7 @@ import { red } from '@material-ui/core/colors';
 export default makeStyles(theme => ({
   root: {
     width: '100%',
+    cursor: 'pointer',
   },
   avatar: {
     backgroundColor: red[500],

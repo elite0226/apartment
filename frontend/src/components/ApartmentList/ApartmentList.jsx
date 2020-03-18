@@ -10,7 +10,7 @@ import ApartmentCard from '../ApartmentCard';
 import { isRealtorManageAllowed } from '../../utils/role';
 import useStyles from './style.js';
 
-function ApartmentList ({ apartments }) {
+function ApartmentList ({ apartments, onClickApartment }) {
   const classes = useStyles();
   const role = useSelector(state => state.auth.user.role);
 
@@ -19,7 +19,11 @@ function ApartmentList ({ apartments }) {
       <Grid container spacing={2}>
         {apartments.map(apartment => (
           <Grid key={apartment.id} item sm={6} xs={12}>
-            <ApartmentCard apartment={apartment} actionable={isRealtorManageAllowed(role)} />
+            <ApartmentCard
+              apartment={apartment}
+              actionable={isRealtorManageAllowed(role)}
+              onClickApartment={onClickApartment}
+            />
           </Grid>
         ))}
         {apartments.length === 0 && (

@@ -22,7 +22,7 @@ import { useSnackbar } from 'notistack';
 import useStyles from './style';
 import { deleteApartment } from '../../store/reducers/apartment';
 
-function ApartmentCard({ apartment, maxWidth, actionable }) {
+function ApartmentCard({ apartment, maxWidth, actionable, onClickApartment }) {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const history = useHistory();
@@ -46,9 +46,15 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
     });
   };
 
+  const handleClick = () => {
+    if (onClickApartment) {
+      onClickApartment(apartment.id);
+    }
+  }
+
   const renderAddress = (address) => {
-    const splitedArray = address.split(',');
-    return splitedArray.slice(splitedArray.length - 2).join(', ');
+    const splitedAddress = address.split(',');
+    return splitedAddress.slice(splitedAddress.length - 2).join(', ');
   };
 
   return (
@@ -57,6 +63,7 @@ function ApartmentCard({ apartment, maxWidth, actionable }) {
       style={{
         maxWidth: maxWidth ? `${maxWidth}px` : 'unset',
       }}
+      onClick={handleClick}
     >
       <CardHeader
         classes={{

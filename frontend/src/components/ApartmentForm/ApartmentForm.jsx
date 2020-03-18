@@ -76,8 +76,8 @@ function ApartmentForm({
     if (!latLng) return;
     setValue('latitude', latLng.lat);
     setValue('longitude', latLng.lng);
-    fromLatLng(latLng.lat, latLng.lng)
-      .then(address => setValue('address', address));
+    // fromLatLng(latLng.lat, latLng.lng)
+    //   .then(address => setValue('address', address));
   }, [latLng]);
 
   const handleGoBack = () => {

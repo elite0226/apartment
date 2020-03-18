@@ -28,10 +28,7 @@ const ApartmentMap = compose(
 )(props => (
   <GoogleMap
     defaultZoom={8}
-    defaultCenter={{
-      lat: (props.position && props.position.lat) || 40.714224,
-      lng: (props.position && props.position.lng) || -73.961452,
-    }}
+    defaultCenter={props.position || { lat: 40.714224, lng: -73.961452 }}
     onClick={props.onMapClick}
   >
     <MarkerClusterer
