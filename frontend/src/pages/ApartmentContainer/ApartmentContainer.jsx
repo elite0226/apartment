@@ -29,7 +29,11 @@ function ApartmentContainer () {
   const [infoWindowOpen, setInfoWindowOpen] = useState([]);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(6);
-  const [filterParams, setFilterParams] = useState({});
+  const [filterParams, setFilterParams] = useState({
+    price: [10, 10000],
+    size: [100, 5000],
+    rooms: [1, 100],
+  });
   const debouncedFilterParams = useDebounce(filterParams, 500);
 
   useEffect(() => {
@@ -63,9 +67,7 @@ function ApartmentContainer () {
     setInfoWindowOpen(newInfoWindowOpen);
   }
 
-  const handleChangeFilterParams = (event) => {
-    const { name, value } = event.target;
-
+  const handleChangeFilterParams = (name, value) => {
     setFilterParams({
       ...filterParams,
       [name]: value,
@@ -125,7 +127,7 @@ function ApartmentContainer () {
       <Grid container spacing={4}>
         <Grid className={classes.noPadding} item md={6}>
           <ApartmentMap
-            apartments={apartments.slice((page - 1) * rowsPerPage, page * rowsPerPage)}
+            apartments={apartments}
             actionable={isRealtorManageAllowed(role)}
             isOpen={infoWindowOpen}
             onToggleOpen={toggleOpenInfoWindow}
