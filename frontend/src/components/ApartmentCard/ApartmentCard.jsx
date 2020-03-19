@@ -87,7 +87,7 @@ function ApartmentCard({ apartment, maxWidth, actionable, onClickApartment }) {
           )
         }
         title={`${apartment.realtor.firstName} ${apartment.realtor.lastName}`}
-        subheader={apartment.addedDate}
+        subheader={new Date(apartment.addedDate).toString().slice(0, 15)}
       />
       <CardContent>
         <Typography gutterBottom variant="h6" component="h2">

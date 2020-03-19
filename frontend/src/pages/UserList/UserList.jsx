@@ -26,6 +26,7 @@ import LoadingFallback from '../../components/LoadingFallback';
 import { getUsers, deleteUser } from '../../store/reducers/user';
 import { GET_USERS_REQUEST } from '../../store/types';
 import { requestFail, requestPending } from '../../utils/request';
+import { capitalize } from '../../utils/naming';
 
 function UserTable({ users }) {
   const history = useHistory();
@@ -142,7 +143,7 @@ function UserList() {
     if (error.status === 401) return 'Error 401 (Unauthorized)';
     return error ?
       Object.keys(error.data).map((key) => (
-        <div key={key}>{error.data[key]}</div>
+        <div key={key}>{`${capitalize(key)}: ${error.data[key]}`}</div>
       )) : '';
   };
 

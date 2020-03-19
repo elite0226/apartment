@@ -19,6 +19,7 @@ import {
   UPDATE_APARTMENT_REQUEST,
 } from '../../store/types';
 import { requestSuccess, requestFail } from '../../utils/request';
+import { capitalize } from '../../utils/naming';
 
 import useStyles from './style';
 
@@ -87,7 +88,7 @@ function ApartmentEdit () {
     if (error.status === 401) return 'Error 401 (Unauthorized)';
     return error ?
       Object.keys(error.data).map((key) => (
-        <div key={key}>{error.data[key]}</div>
+        <div key={key}>{`${capitalize(key)}: ${error.data[key]}`}</div>
       )) : '';
   };
 

@@ -7,6 +7,7 @@ import {
 import { Pagination } from '@material-ui/lab';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
+import useStyles from './style';
 import LoadingFallback from '../../components/LoadingFallback';
 import ApartmentMap from '../../components/ApartmentMap';
 import ApartmentHeader from '../../components/ApartmentHeader';
@@ -17,7 +18,7 @@ import { requestFail, requestPending } from '../../utils/request';
 import { getApartments } from '../../store/reducers/apartment';
 import { GET_APARTMENTS_REQUEST } from '../../store/types';
 import { isRealtorManageAllowed } from '../../utils/role';
-import useStyles from './style';
+import { capitalize } from '../../utils/naming';
 
 function ApartmentContainer () {
   const classes = useStyles();
@@ -28,7 +29,7 @@ function ApartmentContainer () {
   const apartmentStatus = useSelector(state => state.apartment.status);
   const [infoWindowOpen, setInfoWindowOpen] = useState([]);
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage] = useState(6);
   const [filterParams, setFilterParams] = useState({
     price: [10, 10000],
     size: [100, 5000],
@@ -92,7 +93,7 @@ function ApartmentContainer () {
     if (error.status === 401) return 'Error 401 (Unauthorized)';
     return error ?
       Object.keys(error.data).map((key) => (
-        <div key={key}>{error.data[key]}</div>
+        <div key={key}>{`${capitalize(key)}: ${error.data[key]}`}</div>
       )) : '';
   };
 
@@ -114,7 +115,7 @@ function ApartmentContainer () {
           onClickApartment={handleClickApartment}
         />
         <div className={classes.pagination}>
-          <Pagination count={Math.ceil(apartments.length / rowsPerPage)} page={page} onChange={handlePageChange} />
+          <Pagination count={Math.ceil(apartments.length / rowsPerPage) || 1} page={page} onChange={handlePageChange} />
         </div>
       </>      
     );

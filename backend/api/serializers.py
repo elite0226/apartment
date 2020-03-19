@@ -14,6 +14,7 @@ class UserConfigSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     config = UserConfigSerializer(required=False)
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
 
     class Meta:
         model = User

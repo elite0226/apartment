@@ -27,3 +27,7 @@ export const convertToCamel = (obj) => {
   });
   return obj;
 }
+
+export const capitalize = (str) => {
+  return str[0].toUpperCase() + str.slice(1);
+}

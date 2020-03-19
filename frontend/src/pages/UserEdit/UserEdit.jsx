@@ -31,6 +31,7 @@ import {
   UPDATE_USER_REQUEST,
 } from '../../store/types';
 import { requestFail } from '../../utils/request';
+import { capitalize } from '../../utils/naming';
 
 function UserEdit() {
   const classes = useStyles();
@@ -90,7 +91,7 @@ function UserEdit() {
     if (error.status === 401) return 'Error 401 (Unauthorized)';
     return error ?
       Object.keys(error.data).map((key) => (
-        <div key={key}>{error.data[key]}</div>
+        <div key={key}>{`${capitalize(key)}: ${error.data[key]}`}</div>
       )) : '';
   };
 
@@ -133,7 +134,7 @@ function UserEdit() {
                 }}
                 defaultValue=""
               />
-              <ErrorMessage as={<Typography color="error" />} errors={errors} name="firstname" />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="firstName" />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -159,7 +160,7 @@ function UserEdit() {
                 }}
                 defaultValue=""
               />
-              <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastname" />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastName" />
             </Grid>
             <Grid item xs={12} sm={params.id ? 12 : 6}>
               <Controller
@@ -285,7 +286,7 @@ function UserEdit() {
                     }}
                     defaultValue=""
                   />
-                  <ErrorMessage as={<Typography color="error" />} errors={errors} name="confirm-password" />
+                  <ErrorMessage as={<Typography color="error" />} errors={errors} name="confirmPassword" />
                 </Grid>
               </>
             )}

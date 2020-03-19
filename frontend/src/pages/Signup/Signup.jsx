@@ -28,6 +28,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import useStyles from './style';
 import { signup } from '../../store/reducers/auth';
 import { requestFail } from '../../utils/request';
+import { capitalize } from '../../utils/naming';
 import { SIGNUP_REQUEST } from '../../store/types';
 
 export default function SignUp() {
@@ -48,8 +49,8 @@ export default function SignUp() {
 
   const getErrorText = () => {
     return authError ?
-      Object.keys(authError).map((key) => (
-        <div key={key}>{authError[key]}</div>
+      Object.keys(authError.data).map((key) => (
+        <div key={key}>{`${capitalize(key)}: ${authError.data[key]}`}</div>
       )) : '';
   };
 
@@ -96,7 +97,7 @@ export default function SignUp() {
                 }}
                 defaultValue=""
               />
-              <ErrorMessage as={<Typography color="error" />} errors={errors} name="firstname" />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="firstName" />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -122,7 +123,7 @@ export default function SignUp() {
                 }}
                 defaultValue=""
               />
-              <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastname" />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="lastName" />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -178,6 +179,7 @@ export default function SignUp() {
                   <TextField
                     fullWidth
                     label="Email Address"
+                    type="email"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -244,7 +246,7 @@ export default function SignUp() {
                 }}
                 defaultValue=""
               />
-              <ErrorMessage as={<Typography color="error" />} errors={errors} name="confirm-password" />
+              <ErrorMessage as={<Typography color="error" />} errors={errors} name="confirmPassword" />
             </Grid>
           </Grid>
           <Button

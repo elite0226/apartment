@@ -99,3 +99,18 @@ class ApartmentViewSet(viewsets.ModelViewSet):
 
         apartment = serializer.save(realtor=realtor)
         apartment.save()
+
+    def perform_update(self, serializer):
+        realtor_id = self.request.data.get('realtor_id', None)
+        if realtor_id is not None:
+            realtor = User.objects.get(id=realtor_id)
+        else:
+            realtor = self.request.user
+
+        if realtor.config.role != UserConfig.USER_ROLE_REALTOR:
+            return Response(data={
+                "detail": "A user should be realtor"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        apartment = serializer.save(realtor=realtor)
+        apartment.save()
