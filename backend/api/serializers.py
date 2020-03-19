@@ -28,6 +28,8 @@ class UserSerializer(serializers.ModelSerializer):
             'config'
         ]
         extra_kwargs = {
+            'first_name': {'required': True},
+            'last_name': {'required': True},
             'password': {'write_only': True}
         }
 

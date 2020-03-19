@@ -39,7 +39,9 @@ class LoginView(generics.CreateAPIView):
                 },
             })
 
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={
+            "detail": "Invalid username or password"
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 class SignupView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
