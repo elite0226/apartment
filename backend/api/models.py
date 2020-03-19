@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class UserConfig(models.Model):
     USER_ROLE_CLIENT = 'CLIENT'
@@ -28,9 +28,9 @@ class Apartment(models.Model):
 
     name = models.CharField(max_length=50, null=False, blank=False)
     description = models.CharField(max_length=300, default='', blank=True)
-    size = models.IntegerField(null=False, blank=False)
-    price = models.FloatField(null=False, blank=False)
-    rooms = models.IntegerField(null=False, blank=False)
+    size = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(100), MaxValueValidator(5000)])
+    price = models.FloatField(null=False, blank=False, validators=[MinValueValidator(10), MaxValueValidator(10000)])
+    rooms = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(1), MaxValueValidator(100)])
     latitude = models.FloatField(null=False, blank=False)
     longitude = models.FloatField(null=False, blank=False)
     address = models.CharField(max_length=300, default='Sudbury, Canada', null=False, blank=False)

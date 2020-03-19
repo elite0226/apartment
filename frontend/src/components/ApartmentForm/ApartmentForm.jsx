@@ -185,6 +185,10 @@ function ApartmentForm({
             control={control}
             rules={{
               required: 'Description is required',
+              maxLength: {
+                value: 300,
+                message: 'Maximum length of description is 300',
+              }
             }}
             defaultValue=""
           />
@@ -210,7 +214,15 @@ function ApartmentForm({
             name="size"
             control={control}
             rules={{
-              required: 'Floor area size is required',
+              required: 'Floor area size is required',  
+              min: {
+                value: 100,
+                message: 'Floor area size is at least 100m²',
+              },
+              max: {
+                value: 5000,
+                message: 'Floor area size is not exceeded 5000m²', 
+              },
             }}
             defaultValue=""
           />
@@ -237,6 +249,14 @@ function ApartmentForm({
             control={control}
             rules={{
               required: 'Price is required',
+              min: {
+                value: 10,
+                message: 'Price is at least $10',
+              },
+              max: {
+                value: 10000,
+                message: 'Price is not exceeded $10,000',
+              },
             }}
             defaultValue=""
           />
@@ -263,6 +283,14 @@ function ApartmentForm({
             control={control}
             rules={{
               required: 'Number of rooms is required',
+              min: {
+                value: 1,
+                message: 'Number of rooms is at least one',
+              },
+              max: {
+                value: 100,
+                message: 'Number of rooms is not exceeded 100',
+              },
             }}
             defaultValue=""
           />

@@ -37,7 +37,9 @@ function ApartmentContainer () {
   const debouncedFilterParams = useDebounce(filterParams, 500);
 
   useEffect(() => {
-    dispatch(getApartments());
+    dispatch(getApartments({
+      params: filterParams,
+    }));
   }, []);
 
   useEffect(() => {
@@ -51,12 +53,8 @@ function ApartmentContainer () {
 
   useEffect(() => {
     if (debouncedFilterParams) {
-      const params = {};
-      Object.keys(filterParams).forEach(key => {
-        if (!!filterParams[key]) params[key] = filterParams[key];
-      });
       dispatch(getApartments({
-        params,
+        params: filterParams,
       }));
     }
   }, [debouncedFilterParams]);

@@ -71,16 +71,16 @@ class ApartmentViewSet(viewsets.ModelViewSet):
         elif self.request.user.config.role == UserConfig.USER_ROLE_REALTOR:
             qs = qs.filter(realtor=self.request.user)
 
-        size = self.request.GET.getlist('size[]', None)
-        if size is []:
+        size = self.request.GET.getlist('size[]')
+        if len(size) > 0:
             qs = qs.filter(size__gte=size[0], size__lte=size[1])
 
-        price = self.request.GET.getlist('price[]', None)
-        if price is []:
+        price = self.request.GET.getlist('price[]')
+        if len(price) > 0:
             qs = qs.filter(price__gte=price[0], price__lte=price[1])
 
-        rooms = self.request.GET.getlist('rooms[]', None)
-        if rooms is []:
+        rooms = self.request.GET.getlist('rooms[]')
+        if len(rooms) > 0:
             qs = qs.filter(rooms__gte=rooms[0], rooms__lte=rooms[1])
 
         return qs.order_by('-added_date').order_by('price')
