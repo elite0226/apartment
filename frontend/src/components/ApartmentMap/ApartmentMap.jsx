@@ -11,7 +11,7 @@ import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerC
 
 import ApartmentCard from '../ApartmentCard';
 
-const ApartmentMap = compose(
+export const ApartmentMap = compose(
   withProps({
     /**
      * Note: create and replace your own key in the Google console.
@@ -28,8 +28,7 @@ const ApartmentMap = compose(
 )(props => (
   <GoogleMap
     defaultZoom={8}
-    defaultCenter={props.position || { lat: 46.482376, lng: -80.9932135 }}
-    onClick={props.onMapClick}
+    defaultCenter={{ lat: 46.482376, lng: -80.9932135 }}
   >
     <MarkerClusterer
       averageCenter
@@ -49,6 +48,35 @@ const ApartmentMap = compose(
           )}
         </Marker>
       ))}
+    </MarkerClusterer>
+  </GoogleMap>
+));
+
+export const ApartmentMapWithCenter = compose(
+  withProps({
+    /**
+     * Note: create and replace your own key in the Google console.
+     * https://console.developers.google.com/apis/dashboard
+     */
+    googleMapURL:
+      `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}&v=3.exp&libraries=geometry,drawing,places`,
+    loadingElement: <div style={{ height: `100%` }} />,
+    containerElement: <div style={{ position: 'sticky', top: '72px', height: 'calc(100vh - 80px)', width: '100%', marginTop: '24px' }} />,
+    mapElement: <div style={{ height: `100%` }} />
+  }),
+  withScriptjs,
+  withGoogleMap
+)(props => (
+  <GoogleMap
+    defaultZoom={8}
+    defaultCenter={{ lat: 46.482376, lng: -80.9932135 }}
+    center={props.positon || { lat: 46.482376, lng: -80.9932135 }}
+  >
+    <MarkerClusterer
+      averageCenter
+      enableRetinaIcons
+      gridSize={60}
+    >
       {props.position && (
         <Marker
           position={props.position}
@@ -57,5 +85,3 @@ const ApartmentMap = compose(
     </MarkerClusterer>
   </GoogleMap>
 ));
-
-export default ApartmentMap;

@@ -9,7 +9,7 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 
 import useStyles from './style';
 import LoadingFallback from '../../components/LoadingFallback';
-import ApartmentMap from '../../components/ApartmentMap';
+import { ApartmentMap } from '../../components/ApartmentMap';
 import ApartmentHeader from '../../components/ApartmentHeader';
 import ApartmentList from '../../components/ApartmentList';
 import ApartmentFilter from '../../components/ApartmentFilter';

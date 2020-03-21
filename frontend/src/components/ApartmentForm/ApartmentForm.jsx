@@ -28,7 +28,7 @@ import useDebounce from '../../utils/useDebounce';
 
 function ApartmentForm({
   apartment,
-  latLng,
+  setLatLng,
   onSubmit,
 }) {
   const classes = useStyles();
@@ -78,23 +78,21 @@ function ApartmentForm({
     setValue('latitude', apartment.latitude);
     setValue('longitude', apartment.longitude);
     setValue('address', apartment.address);
-  }, [apartment]);
 
-  useEffect(() => {
-    if (!latLng) return;
-    setValue('latitude', latLng.lat);
-    setValue('longitude', latLng.lng);
-    fromLatLng(latLng.lat, latLng.lng)
-      .then(address => setValue('address', address));
-  }, [latLng]);
+    setGeoCoordinates({
+      lat: apartment.latitude,
+      lng: apartment.longitude,
+    });
+  }, [apartment]);
 
   useEffect(() => {
     if (geoCoordinates.lat && geoCoordinates.lng) {
       fromLatLng(geoCoordinates.lat, geoCoordinates.lng)
-        .then(address => {
+        .then(res => {
           clearError('latitude');
           clearError('longitude');
-          setValue('address', address);
+          setValue('address', res.formatted_address);
+          setLatLng(res.geometry.location);
         })
         .catch(() => {
           setError('latitude', 'invalid', 'Valid latitude is required');
@@ -110,6 +108,7 @@ function ApartmentForm({
         clearError('address');
         setValue('latitude', latLng.lat);
         setValue('longitude', latLng.lng);
+        setLatLng(latLng);
       })
       .catch(() => {
         setError('address', 'invalid', 'Valid address is required');
@@ -130,6 +129,7 @@ function ApartmentForm({
   };
 
   const handleChangeLongitude = (newValue) => {
+    console.log('update longitude');
     setGeoCoordinates({
       ...geoCoordinates,
       lng: newValue,

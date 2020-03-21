@@ -1,3 +1,6 @@
-import ApartmentMap from './ApartmentMap';
+import { ApartmentMap, ApartmentMapWithCenter } from './ApartmentMap';
 
-export default ApartmentMap;
+export {
+    ApartmentMap,
+    ApartmentMapWithCenter,
+};

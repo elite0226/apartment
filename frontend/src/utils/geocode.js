@@ -11,7 +11,7 @@ export const fromLatLng = async (lat, lng) => {
 
   if (response.data.results.length === 0) throw 'Invalid geo coordinates';
 
-  return response.data.results[0].formatted_address;
+  return response.data.results[0];
 };
 
 export const fromAddress = async (address) => {

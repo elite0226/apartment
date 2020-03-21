@@ -10,7 +10,7 @@ import {
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 
-import ApartmentMap from '../../components/ApartmentMap';
+import { ApartmentMapWithCenter as ApartmentMap } from '../../components/ApartmentMap';
 import ApartmentForm from '../../components/ApartmentForm';
 import { getApartment, addApartment, updateApartment } from '../../store/reducers/apartment';
 import {
@@ -49,13 +49,6 @@ function ApartmentEdit () {
       lng: apartment.longitude,
     });
   }, [apartment]);
-
-  const handleMapClick = (e) => {
-    setLatLng({
-      lat: e.latLng.lat(),
-      lng: e.latLng.lng(),
-    });
-  };
 
   const handleSubmit = (data) => {
     if (params.id) {
@@ -96,7 +89,7 @@ function ApartmentEdit () {
     <Container maxWidth={false}>
       <Grid container spacing={4}>
         <Grid className={classes.noPadding} item md={6}>
-          <ApartmentMap position={latLng} onMapClick={handleMapClick} />
+          <ApartmentMap position={latLng} />
         </Grid>
         <Grid className={classes.noPadding} item md={6}>
           <Box className={classes.paper}>
@@ -112,6 +105,7 @@ function ApartmentEdit () {
             <ApartmentForm
               latLng={latLng}
               apartment={apartment}
+              setLatLng={setLatLng}
               onSubmit={handleSubmit}
             />
           </Box>
