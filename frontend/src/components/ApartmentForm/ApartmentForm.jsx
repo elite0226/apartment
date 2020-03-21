@@ -23,7 +23,8 @@ import { GET_APARTMENT_REQUEST } from '../../store/types';
 import { getUsers } from '../../store/reducers/user';
 import { requestSuccess } from '../../utils/request';
 import { isAdmin, isRealtor } from '../../utils/role';
-import { fromLatLng } from '../../utils/geocode';
+import { fromLatLng, fromAddress } from '../../utils/geocode';
+import useDebounce from '../../utils/useDebounce';
 
 function ApartmentForm({
   apartment,
@@ -31,15 +32,22 @@ function ApartmentForm({
   onSubmit,
 }) {
   const classes = useStyles();
+
   const params = useParams();
   const history = useHistory();
+
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   const users = useSelector(state => state.user.users);
   const apartmentStatus = useSelector(state => state.apartment.status);
-  const { control, handleSubmit, setValue, errors } = useForm();
+
+  const { control, handleSubmit, setValue, setError, clearError, errors } = useForm();
   
   const [realtors, setRealtors] = useState([]);
+  const [geoCoordinates, setGeoCoordinates] = useState({});
+  const debouncedGeoCoordinates = useDebounce(geoCoordinates, 1000);
+  const [geoAddress, setGeoAddress] = useState(null);
+  const debouncedGeoAddress = useDebounce(geoAddress, 1000);
 
   useEffect(() => {
     if (isAdmin(user.role)) {
@@ -80,14 +88,66 @@ function ApartmentForm({
       .then(address => setValue('address', address));
   }, [latLng]);
 
+  useEffect(() => {
+    if (geoCoordinates.lat && geoCoordinates.lng) {
+      fromLatLng(geoCoordinates.lat, geoCoordinates.lng)
+        .then(address => {
+          clearError('latitude');
+          clearError('longitude');
+          setValue('address', address);
+        })
+        .catch(() => {
+          setError('latitude', 'invalid', 'Valid latitude is required');
+          setError('longitude', 'invalid', 'Valid longitude is required');
+        });
+    }
+  }, [debouncedGeoCoordinates]);
+
+  useEffect(() => {
+    if (!geoAddress) return;
+    fromAddress(geoAddress)
+      .then(latLng => {
+        clearError('address');
+        setValue('latitude', latLng.lat);
+        setValue('longitude', latLng.lng);
+      })
+      .catch(() => {
+        setError('address', 'invalid', 'Valid address is required');
+      });
+  }, [debouncedGeoAddress]);
+
   const handleGoBack = () => {
     history.goBack();
   };
 
+  const handleChangeLatitude = (newValue) => {
+    setGeoCoordinates({
+      ...geoCoordinates,
+      lat: newValue,
+    });
+
+    return newValue;
+  };
+
+  const handleChangeLongitude = (newValue) => {
+    setGeoCoordinates({
+      ...geoCoordinates,
+      lng: newValue,
+    });
+    
+    return newValue;
+  };
+
+  const handleChangeAddress = (newValue) => {
+    setGeoAddress(newValue);
+    
+    return newValue;
+  }
+
   return (!params.id || apartment) && (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={1}>
-        <Grid item sm={4}>
+        <Grid item sm={isAdmin(user.role) ? 4 : 6}>
           <Controller
             as={
               <TextField
@@ -113,38 +173,40 @@ function ApartmentForm({
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="name" />
         </Grid>
-        <Grid item sm={4}>
-          <Controller
-            as={
-              <>
-                <InputLabel className={classes.label}>Associated realtor</InputLabel>
-                <Select
-                  className={classes.select}
-                  defaultValue={(apartment && apartment.realtor.id) || ''}
-                  onChange={(event) => setValue('realtorId', event.target.value)}
-                  native
-                >
-                  {isAdmin(user.role) && (
-                    <option value="" />
-                  )}
-                  {realtors.map(realtor => (
-                    <option key={realtor.id} value={realtor.id}>
-                      {`${realtor.firstName} ${realtor.lastName}`}
-                    </option>
-                  ))}
-                </Select>
-              </>
-            }
-            name="realtorId"
-            control={control}
-            rules={{
-              required: 'Realtor is required',
-            }}
-            defaultValue=""
-          />
-          <ErrorMessage as={<Typography color="error" />} errors={errors} name="realtorId" />
-        </Grid>
-        <Grid item sm={4}>
+        {isAdmin(user.role) && (
+          <Grid item sm={4}>
+            <Controller
+              as={
+                <>
+                  <InputLabel className={classes.label}>Associated realtor</InputLabel>
+                  <Select
+                    className={classes.select}
+                    defaultValue={(apartment && apartment.realtor.id) || ''}
+                    onChange={(event) => setValue('realtorId', event.target.value)}
+                    native
+                  >
+                    {isAdmin(user.role) && (
+                      <option value="" />
+                    )}
+                    {realtors.map(realtor => (
+                      <option key={realtor.id} value={realtor.id}>
+                        {`${realtor.firstName} ${realtor.lastName}`}
+                      </option>
+                    ))}
+                  </Select>
+                </>
+              }
+              name="realtorId"
+              control={control}
+              rules={{
+                required: 'Realtor is required',
+              }}
+              defaultValue=""
+            />
+            <ErrorMessage as={<Typography color="error" />} errors={errors} name="realtorId" />
+          </Grid>
+        )}
+        <Grid item sm={isAdmin(user.role) ? 4 : 6}>
           <Controller
             as={
               <>
@@ -302,6 +364,7 @@ function ApartmentForm({
               <TextField
                 margin="normal"
                 fullWidth
+                type="number"
                 label="Latitude"
                 InputProps={{
                   startAdornment: (
@@ -310,14 +373,22 @@ function ApartmentForm({
                     </InputAdornment>
                   ),
                 }}
-                disabled
               />
             }
             name="latitude"
             control={control}
             rules={{
               required: 'Latitude is required',
+              min: {
+                value: -90,
+                message: 'Latitude must a number between -90 and 90',
+              },
+              max: {
+                value: 90,
+                message: 'Latitude must a number between -90 and 90',
+              },
             }}
+            onChange={([ event ]) => handleChangeLatitude(event.target.value)}
             defaultValue=""
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="latitude" />
@@ -328,6 +399,7 @@ function ApartmentForm({
               <TextField
                 margin="normal"
                 fullWidth
+                type="number"
                 label="Longitude"
                 InputProps={{
                   startAdornment: (
@@ -336,14 +408,22 @@ function ApartmentForm({
                     </InputAdornment>
                   ),
                 }}
-                disabled
               />
             }
             name="longitude"
             control={control}
             rules={{
               required: 'Longitude is required',
+              min: {
+                value: -180,
+                message: 'Longitude must be a number between -180 and 180',
+              },
+              max: {
+                value: 180,
+                message: 'Longitude must be a number between -180 and 180',
+              },
             }}
+            onChange={([ event ]) => handleChangeLongitude(event.target.value)}
             defaultValue=""
           />
           <ErrorMessage as={<Typography color="error" />} errors={errors} name="longitude" />
@@ -362,13 +442,17 @@ function ApartmentForm({
                     </InputAdornment>
                   ),
                 }}
-                disabled
               />
             }
             name="address"
             control={control}
+            rules={{
+              required: 'Address is required',
+            }}
+            onChange={([ event ]) => handleChangeAddress(event.target.value)}
             defaultValue=""
           />
+          <ErrorMessage as={<Typography color="error" />} errors={errors} name="address" />
         </Grid>
         <Grid container>
           <Grid item xs>
