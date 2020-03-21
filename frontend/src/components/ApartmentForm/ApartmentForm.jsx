@@ -41,7 +41,7 @@ function ApartmentForm({
   const users = useSelector(state => state.user.users);
   const apartmentStatus = useSelector(state => state.apartment.status);
 
-  const { control, handleSubmit, setValue, setError, clearError, errors } = useForm();
+  const { control, handleSubmit, setValue, setError, clearError, getValues, errors } = useForm();
   
   const [realtors, setRealtors] = useState([]);
   const [geoCoordinates, setGeoCoordinates] = useState({});
@@ -78,16 +78,15 @@ function ApartmentForm({
     setValue('latitude', apartment.latitude);
     setValue('longitude', apartment.longitude);
     setValue('address', apartment.address);
-
-    setGeoCoordinates({
-      lat: apartment.latitude,
-      lng: apartment.longitude,
-    });
   }, [apartment]);
 
   useEffect(() => {
-    if (geoCoordinates.lat && geoCoordinates.lng) {
-      fromLatLng(geoCoordinates.lat, geoCoordinates.lng)
+    let { lat, lng } = geoCoordinates;
+    if (!lat) lat = getValues()['latitude'];
+    if (!lng) lng = getValues()['longitude'];
+
+    if (lat && lng) {
+      fromLatLng(lat, lng)
         .then(res => {
           clearError('latitude');
           clearError('longitude');
@@ -129,7 +128,6 @@ function ApartmentForm({
   };
 
   const handleChangeLongitude = (newValue) => {
-    console.log('update longitude');
     setGeoCoordinates({
       ...geoCoordinates,
       lng: newValue,
