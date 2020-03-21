@@ -70,7 +70,7 @@ export const ApartmentMapWithCenter = compose(
   <GoogleMap
     defaultZoom={8}
     defaultCenter={{ lat: 46.482376, lng: -80.9932135 }}
-    center={props.positon || { lat: 46.482376, lng: -80.9932135 }}
+    center={props.position || { lat: 46.482376, lng: -80.9932135 }}
   >
     <MarkerClusterer
       averageCenter
